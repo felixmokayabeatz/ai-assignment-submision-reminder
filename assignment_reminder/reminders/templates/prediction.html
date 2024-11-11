@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Assignment Submission Prediction</title>
+</head>
+<body>
+    <h2>Predict Assignment Submission Status</h2>
+    <form method="POST">
+        {% csrf_token %}
+        <label>Days Before Due:</label>
+        <input type="number" name="days_before_due" required><br>
+        
+        <label>Reminders Sent:</label>
+        <input type="number" name="reminders_sent" required><br>
+        
+        <button type="submit">Predict</button>
+    </form>
+    
+    {% if status %}
+        <h3>Prediction: {{ status }}</h3>
+    {% endif %}
+</body>
+</html>
