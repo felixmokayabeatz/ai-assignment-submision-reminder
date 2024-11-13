@@ -1,4 +1,3 @@
-# assignment_reminder/celery.py
 from __future__ import absolute_import, unicode_literals
 import os
 from celery import Celery
@@ -7,6 +6,13 @@ from celery import Celery
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'assignment_reminder.settings')
 
 app = Celery('assignment_reminder')
+
+# Use 'solo' pool for Windows to avoid the 'prefork' issue
+app.conf.update(
+    worker_pool='solo',
+    broker='redis://localhost:6379/0',
+    result_backend='redis://localhost:6379/0',
+)
 
 # Using a string here means the worker doesn't have to serialize
 # the configuration object to child processes.

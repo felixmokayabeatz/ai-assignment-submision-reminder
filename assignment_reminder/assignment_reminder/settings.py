@@ -96,12 +96,16 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
+# Set the default language for the application
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+# Set the default time zone for your server
+TIME_ZONE = 'Africa/Nairobi'  # This sets the server's default time zone to Nairobi time
 
+# Enable Internationalization
 USE_I18N = True
 
+# Enable timezone support
 USE_TZ = True
 
 
@@ -119,10 +123,21 @@ CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
 
 
 
-# settings.py for production (example with Gmail)
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'felixmokaya675@gmail.com'
-EMAIL_HOST_PASSWORD = 'your-email-password'
+# # settings.py for production (example with Gmail)
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+# EMAIL_HOST_USER = 'felixmokaya675@gmail.com'
+# EMAIL_HOST_PASSWORD = 'your-email-password'
+
+from decouple import config
+
+
+
+EMAIL_BACKEND = config('EMAIL_BACKEND', default='django.core.mail.backends.smtp.EmailBackend')
+EMAIL_HOST = config('EMAIL_HOST', default='smtp.gmail.com')
+EMAIL_PORT = config('EMAIL_PORT', default=587, cast=int)
+EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True, cast=bool)
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')

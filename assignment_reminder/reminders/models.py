@@ -9,6 +9,7 @@ class Assignment(models.Model):
     title = models.CharField(max_length=200)
     due_date = models.DateTimeField()
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    reminder_sent = models.BooleanField(default=False)
 
 class Reminder(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
