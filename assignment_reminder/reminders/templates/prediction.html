@@ -4,20 +4,17 @@
     <title>Assignment Submission Prediction</title>
 </head>
 <body>
-    <h2>Predict Assignment Submission Status</h2>
-    <form method="POST">
-        {% csrf_token %}
-        <label>Days Before Due:</label>
-        <input type="number" name="days_before_due" required><br>
-        
-        <label>Reminders Sent:</label>
-        <input type="number" name="reminders_sent" required><br>
-        
-        <button type="submit">Predict</button>
-    </form>
+    <h1>Assignment Prediction</h1>
     
     {% if status %}
-        <h3>Prediction: {{ status }}</h3>
+        <p>Status: {{ status }}</p>
+        <p>Assignment: {{ assignment.title }}</p>
+        <p>Due Date: {{ assignment.due_date }}</p>
     {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit">Check Prediction</button>
+    </form>
 </body>
 </html>

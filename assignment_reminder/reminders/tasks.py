@@ -5,6 +5,7 @@ from django.core.mail import send_mail
 from django.utils import timezone
 from datetime import timedelta
 from celery import shared_task
+
 from .models import Assignment  # Adjust according to your model location
 
 logger = logging.getLogger(__name__)
@@ -20,8 +21,8 @@ def check_and_send_reminders():
         send_mail(
             'Reminder: Upcoming Assignment Due',
             f'Your assignment "{assignment.title}" is due soon.',
-            'from@example.com',  # Replace with your actual sender email
-            [assignment.student.email],  # Assuming you have a related student field on Assignment
+            'ecopiboe@gmail.com',  # Replace with your actual sender email
+            [assignment.student.user.email],  # Assuming you have a related student field on Assignment
             fail_silently=False,
         )
         assignment.reminder_sent = True  # Mark reminder as sent
