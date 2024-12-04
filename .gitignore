@@ -1,5 +1,6 @@
 
-/assignment_reminder_env
+ai-assignment-submision-reminder_v_env/
 /__pycache__
 
 .env
+*.pyc
