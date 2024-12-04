@@ -7,9 +7,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'assignment_reminder.settings')
 
 app = Celery('assignment_reminder')
 
-# Use 'solo' pool for Windows to avoid the 'prefork' issue
 app.conf.update(
-    worker_pool='solo',
     broker='redis://localhost:6379/0',
     result_backend='redis://localhost:6379/0',
 )
@@ -25,3 +23,16 @@ app.autodiscover_tasks()
 @app.task(bind=True)
 def debug_task(self):
     print('Request: {0!r}'.format(self.request))
+
+
+
+
+from celery.schedules import crontab
+
+app.conf.beat_schedule = {
+    'send_reminders_every_day_at_9am': {
+        'task': 'assignment_reminder.tasks.check_and_send_reminders',  # The full path to the task
+        'schedule': crontab(minute=33, hour=16),  # Sends reminders every day at 9:00 AM
+    },
+    # You can add more schedules if needed
+}

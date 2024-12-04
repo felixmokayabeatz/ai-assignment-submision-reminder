@@ -9,7 +9,6 @@ from celery import shared_task
 from .models import Assignment  # Adjust according to your model location
 
 logger = logging.getLogger(__name__)
-
 @shared_task
 def check_and_send_reminders():
     now = timezone.now()
@@ -20,7 +19,7 @@ def check_and_send_reminders():
         logger.info(f"Sending reminder for {assignment.title} due on {assignment.due_date}")
         send_mail(
             'Reminder: Upcoming Assignment Due',
-            f'Your assignment "{assignment.title}" is due soon.',
+            f'Your assignment "{assignment.title}" is due soon. Due date is {assignment.due_date}',
             'ecopiboe@gmail.com',  # Replace with your actual sender email
             [assignment.student.user.email],  # Assuming you have a related student field on Assignment
             fail_silently=False,

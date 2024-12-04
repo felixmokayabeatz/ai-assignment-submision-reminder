@@ -100,14 +100,15 @@ AUTH_PASSWORD_VALIDATORS = [
 LANGUAGE_CODE = 'en-us'
 
 # Set the default time zone for your server
-TIME_ZONE = 'Africa/Nairobi'  # This sets the server's default time zone to Nairobi time
+ # This sets the server's default time zone to Nairobi time
 
 # Enable Internationalization
 USE_I18N = True
 
 # Enable timezone support
-USE_TZ = True
+# USE_TZ = True
 
+TIME_ZONE = 'Africa/Nairobi' 
 
 STATIC_URL = 'static/'
 
