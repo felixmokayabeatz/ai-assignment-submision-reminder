@@ -1,6 +1,7 @@
 
 ai-assignment-submision-reminder_v_env/
-/__pycache__
+/__pycache__/
+/.vscode/
 
 .env
 
