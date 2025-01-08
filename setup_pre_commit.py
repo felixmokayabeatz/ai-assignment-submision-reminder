@@ -11,7 +11,9 @@ def print_colored(message, color):
     print(f"{colors.get(color, colors['reset'])}{message}{colors['reset']}")
 
 def create_pre_commit_hook():
-    print_colored("This script will set up a Git pre-commit hook to prevent commits if 'DEBUG = True' is found in any settings.py file.", "yellow")
+    print_colored("This script will set up a Git pre-commit hook to prevent commits if:", "yellow")
+    print_colored("1. 'DEBUG = True' is found in any settings.py file", "yellow")
+    print_colored("2. Any .env file is being committed", "yellow")
     confirmation = input("Are you sure you want to proceed? (yes/no): ").strip().lower()
 
     if confirmation not in ["yes", "y"]:
@@ -25,10 +27,16 @@ def create_pre_commit_hook():
         print_colored("ERROR: No Git repository found in the current directory.", "red")
         return
 
-    # Modify the find command to exclude virtual environments and directories without the required project files
     pre_commit_content = """#!/bin/bash
 
-# Find all settings.py files but exclude virtual environments and directories without typical project files (urls.py, wsgi.py, asgi.py).
+# Check for .env files in staged changes
+if git diff --cached --name-only | grep -q "\.env$"; then
+    echo "ERROR: Attempting to commit .env file. Please remove it from staging area."
+    echo "You can use: git reset -- .env"
+    exit 1
+fi
+
+# Find all settings.py files but exclude virtual environments and directories without the required project files
 SETTINGS_FILE=$(find . -name "settings.py" ! -path "*/pyvenv.cfg" ! -path "*/env/*" ! -path "*/.venv/*" ! -path "*/.git/*")
 
 # Now loop through the found directories and check for urls.py, wsgi.py, or asgi.py
@@ -59,7 +67,9 @@ fi
     os.chmod(pre_commit_path, 0o775)
 
     print_colored(f"Pre-commit hook created successfully at {pre_commit_path}.", "green")
-    print_colored("The hook will block commits if 'DEBUG = True' is found in the valid settings.py file.", "blue")
+    print_colored("The hook will:", "blue")
+    print_colored("1. Block commits if 'DEBUG = True' is found in the valid settings.py file", "blue")
+    print_colored("2. Prevent committing any .env files", "blue")
 
 if __name__ == "__main__":
     create_pre_commit_hook()
