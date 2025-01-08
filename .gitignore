@@ -1,9 +1,42 @@
 
-ai-assignment-submision-reminder_v_env/
-/__pycache__/
 __pycache__/
-/.vscode/
+*.pyc
+*.pyo
+
+venv/
+.env/
+bin/
+lib64/
+share/
+
+
+.idea/
+.vscode/
+
+.DS_Store
+Thumbs.db
+
+/include
+/lib
+/Scripts
+/pyvenv.cfg
+
+**/*.pyc
+**/__pycache__/
 
 .env
 
-*.pyc
+db.sqlite3
+*db.sqlite3
+db.sqlite3
+
+local.py
+ai-assignment-submision-reminder_v_env/
+
+/__pycache__/
+__pycache__/
+/.vscode/
+__pycache__/
+*.__pycache__
+.env
+
