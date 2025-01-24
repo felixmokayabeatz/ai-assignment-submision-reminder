@@ -9,6 +9,8 @@ def send_assignment_reminders():
     # Delayed import to prevent AppRegistryNotReady error
     from submissions.models import Assignment, StudentSubmission
     from students.models import StudentProfile
+    
+    print("Task executed!")
 
     # Get upcoming assignments within the next 7 days
     upcoming_assignments = Assignment.objects.filter(
@@ -36,6 +38,7 @@ def send_assignment_reminders():
                     assignment, 
                     days_until_deadline
                 )
+        return "Task finished"
 
 
 def send_reminder_email(student, assignment, days_left):

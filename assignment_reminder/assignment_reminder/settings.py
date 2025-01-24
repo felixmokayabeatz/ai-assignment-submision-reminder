@@ -27,6 +27,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'reminders',
     'django_celery_beat',
+    'submissions',
+    'students',
+    'notifications',
 ]
 
 MIDDLEWARE = [
@@ -116,21 +119,23 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-# settings.py
-CELERY_BROKER_URL = 'redis://localhost:6379/0'  # Using Redis as the broker
+from celery.schedules import crontab
+
+# Celery settings
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_TIMEZONE = 'UTC'
 
+# Celery beat schedule (This sets the periodic task)
+CELERY_BEAT_SCHEDULE = {
+    'send_assignment_reminders': {
+        'task': 'notifications.tasks.send_assignment_reminders',
+        'schedule': crontab(minute=0, hour=9),  # This will run every day at 9 AM
+    },
+}
 
-
-# # settings.py for production (example with Gmail)
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_HOST = 'smtp.gmail.com'
-# EMAIL_PORT = 587
-# EMAIL_USE_TLS = True
-# EMAIL_HOST_USER = 'felixmokaya675@gmail.com'
-# EMAIL_HOST_PASSWORD = 'your-email-password'
 
 from decouple import config
 
