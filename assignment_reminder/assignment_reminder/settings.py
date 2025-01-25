@@ -16,7 +16,8 @@ DEBUG = False
 ALLOWED_HOSTS = ['*']
 
 
-# Application definition
+CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
+
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -121,24 +122,21 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 from celery.schedules import crontab
 
-# Celery settings
-CELERY_BROKER_URL = 'redis://localhost:6379/0'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
-CELERY_ACCEPT_CONTENT = ['json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_TIMEZONE = 'UTC'
+CELERY_BROKER_URL = 'redis://localhost:6379'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379'
 
-# Celery beat schedule (This sets the periodic task)
+# settings.py
 CELERY_BEAT_SCHEDULE = {
-    'send_assignment_reminders': {
+    'send-assignment-reminders': {
         'task': 'notifications.tasks.send_assignment_reminders',
-        'schedule': crontab(minute=0, hour=9),  # This will run every day at 9 AM
+        'schedule': crontab(minute='*/1'),  # Run every 5 minutes for testing
     },
 }
 
 
 from decouple import config
 
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 
 EMAIL_BACKEND = config('EMAIL_BACKEND', default='django.core.mail.backends.smtp.EmailBackend')
