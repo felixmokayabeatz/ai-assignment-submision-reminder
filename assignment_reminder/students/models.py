@@ -1,7 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.db.models import Avg
-from submissions.models import StudentSubmission
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
@@ -27,7 +25,6 @@ class StudentProfile(models.Model):
             StudentProfile.objects.create(user=instance)
 
     def get_reminder_strategy(self):
-        # Adjust reminder strategy based on procrastination score
         if self.procrastination_score <= -5:  # Early submitters
             return {
                 'initial_reminder': 7,  # 7 days before
