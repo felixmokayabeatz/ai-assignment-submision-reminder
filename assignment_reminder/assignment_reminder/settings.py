@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     'submissions',
     'students',
     'notifications',
+    "whitenoise.runserver_nostatic",
 ]
 
 MIDDLEWARE = [
@@ -41,6 +42,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "whitenoise.middleware.WhiteNoiseMiddleware",
+    
 ]
 
 ROOT_URLCONF = 'assignment_reminder.urls'
@@ -107,14 +110,18 @@ LANGUAGE_CODE = 'en-us'
  # This sets the server's default time zone to Nairobi time
 
 # Enable Internationalization
-USE_I18N = True
+# USE_I18N = True
 
 # Enable timezone support
-# USE_TZ = True
+USE_TZ = True
+# TIME_ZONE = 'UTC'
 
-TIME_ZONE = 'Africa/Nairobi' 
+TIME_ZONE = 'Africa/Nairobi'
+import os
 
-STATIC_URL = 'static/'
+STATIC_URL = "/static/"
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")  # Ensure this is defined
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]  # Optional for additional static dirs
 
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
@@ -125,13 +132,13 @@ from celery.schedules import crontab
 CELERY_BROKER_URL = 'redis://localhost:6379'
 CELERY_RESULT_BACKEND = 'redis://localhost:6379'
 
-# settings.py
-CELERY_BEAT_SCHEDULE = {
-    'send-assignment-reminders': {
-        'task': 'notifications.tasks.send_assignment_reminders',
-        'schedule': crontab(minute='*/1'),  # Run every 5 minutes for testing
-    },
-}
+# # settings.py
+# CELERY_BEAT_SCHEDULE = {
+#     'send-assignment-reminders': {
+#         'task': 'notifications.tasks.send_assignment_reminders',
+#         'schedule': crontab(minute='*/1'),  # Run every 5 minutes for testing
+#     },
+# }
 
 
 from decouple import config
@@ -145,3 +152,12 @@ EMAIL_PORT = config('EMAIL_PORT', default=587, cast=int)
 EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True, cast=bool)
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+
+from celery import Celery
+
+app = Celery('assignment_reminder')
+
+app.config_from_object('django.conf:settings', namespace='CELERY')
+
+# Load task modules from all registered Django app configs.
+app.autodiscover_tasks()
