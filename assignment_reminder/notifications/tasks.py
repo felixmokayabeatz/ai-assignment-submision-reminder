@@ -11,7 +11,6 @@ def send_assignment_reminders():
     
     print("Task executed!")
     
-    # Get current time in UTC
     now_utc = timezone.now()
     
     # Get upcoming assignments within the next 7 days
