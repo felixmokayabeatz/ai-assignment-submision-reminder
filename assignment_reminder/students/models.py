@@ -25,28 +25,28 @@ class StudentProfile(models.Model):
             StudentProfile.objects.create(user=instance)
 
     def get_reminder_strategy(self):
-        if self.procrastination_score <= -5:  # Early submitters
+        if self.procrastination_score <= -5:
             return {
-                'initial_reminder': 7,  # 7 days before
-                'follow_up_reminders': [5, 3, 1]  # Additional reminders
+                'initial_reminder': 7,
+                'follow_up_reminders': [5, 3, 1]
             }
-        elif self.procrastination_score < 0:  # Slightly early
+        elif self.procrastination_score < 0:
             return {
-                'initial_reminder': 5,  # 5 days before
+                'initial_reminder': 5,
                 'follow_up_reminders': [3, 1]
             }
-        elif self.procrastination_score == 0:  # Consistent
+        elif self.procrastination_score == 0:
             return {
-                'initial_reminder': 3,  # 3 days before
+                'initial_reminder': 3,
                 'follow_up_reminders': [1]
             }
-        elif self.procrastination_score < 5:  # Moderate procrastinator
+        elif self.procrastination_score < 5:
             return {
-                'initial_reminder': 2,  # 2 days before
-                'follow_up_reminders': [1, 0.5]  # More frequent reminders
+                'initial_reminder': 2,
+                'follow_up_reminders': [1, 0.5]
             }
-        else:  # Extreme procrastinator
+        else:
             return {
-                'initial_reminder': 1,  # 1 day before
-                'follow_up_reminders': [0.5, 0.25]  # Very frequent reminders
+                'initial_reminder': 1,
+                'follow_up_reminders': [0.5, 0.25]
             }
