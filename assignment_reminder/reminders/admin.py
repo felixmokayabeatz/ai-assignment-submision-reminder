@@ -1,4 +1,3 @@
-# In submissions/admin.py
 from django.contrib import admin
 from students.models import StudentSubmission
 from submissions.models import Assignment
@@ -29,9 +28,7 @@ class CustomUserAdmin(UserAdmin):
     def get_inlines(self, request, obj=None):
         return list(super().get_inlines(request, obj)) + [StudentProfileInline]
 
-# Re-register UserAdmin
 admin.site.unregister(User)
 admin.site.register(User, CustomUserAdmin)
 
-# Register StudentProfile separately
 admin.site.register(StudentProfile)
