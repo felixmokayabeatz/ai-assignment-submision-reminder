@@ -9,7 +9,6 @@ class Assignment(models.Model):
     course = models.CharField(max_length=100)
     
     def save(self, *args, **kwargs):
-        # Ensure that the deadline is timezone-aware before saving
         if self.deadline and self.deadline.tzinfo is None:
             self.deadline = timezone.make_aware(self.deadline, timezone.get_current_timezone())
         super().save(*args, **kwargs)
