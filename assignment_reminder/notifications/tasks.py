@@ -13,7 +13,6 @@ def send_assignment_reminders():
     
     now_utc = timezone.now()
     
-    # Get upcoming assignments within the next 7 days
     upcoming_assignments = Assignment.objects.filter(
         deadline__range=[now_utc, now_utc + timezone.timedelta(days=7)]
     ).select_related('course')  # Add select_related if there's a course relation
