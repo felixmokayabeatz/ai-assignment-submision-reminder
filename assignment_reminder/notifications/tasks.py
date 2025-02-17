@@ -15,7 +15,7 @@ def send_assignment_reminders():
     
     upcoming_assignments = Assignment.objects.filter(
         deadline__range=[now_utc, now_utc + timezone.timedelta(days=7)]
-    ).select_related('course')  # Add select_related if there's a course relation
+    ).select_related('course')
     
     print(f"Found {upcoming_assignments.count()} assignments.")
     
