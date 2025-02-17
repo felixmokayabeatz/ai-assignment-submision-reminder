@@ -20,7 +20,6 @@ def send_assignment_reminders():
     print(f"Found {upcoming_assignments.count()} assignments.")
     
     for assignment in upcoming_assignments:
-        # Ensure deadline is in UTC
         deadline = assignment.deadline
         if deadline.tzinfo is None:
             deadline = make_aware(deadline, timezone.utc)
@@ -28,39 +27,34 @@ def send_assignment_reminders():
         student_submissions = StudentSubmission.objects.filter(
             assignment=assignment,
             is_submitted=False
-        ).select_related('student')  # Optimize by pre-fetching student data
+        ).select_related('student')
         
         print(f"Processing {student_submissions.count()} submissions for {assignment.title}.")
         
         for submission in student_submissions:
             try:
-                # Get student user object
                 student = (
                     submission.student if isinstance(submission.student, User)
                     else User.objects.get(username=submission.student)
                 )
                 
-                # Get student profile and reminder strategy
                 student_profile = StudentProfile.objects.get(user=student)
                 reminder_strategy = student_profile.get_reminder_strategy()
                 
-                # Calculate days until deadline in UTC
                 time_until_deadline = deadline - now_utc
                 days_until_deadline = time_until_deadline.days
                 
                 print(f"Days until deadline for {assignment.title}: {days_until_deadline}")
                 print(f"Reminder strategy for {student.username}: {reminder_strategy['follow_up_reminders']}")
                 
-                # Check if reminder should be sent
                 if days_until_deadline in reminder_strategy['follow_up_reminders'] or days_until_deadline == 0:
-                    # Convert deadline to student's local timezone for email
                     local_deadline = localtime(deadline)
                     
                     send_reminder_email(
                         student,
                         assignment,
                         days_until_deadline,
-                        local_deadline=local_deadline  # Pass localized deadline to email function
+                        local_deadline=local_deadline
                     )
                     print(f"Email sent for {assignment.title} to {student.username}.")
                 else:
