@@ -1,13 +1,7 @@
 from pathlib import Path
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-&n1o*ap+gyk%!-8fb@3vaf^#b9o$2&drd+#ftl!in%hor#1_yj'
 
 DEBUG = False
@@ -51,7 +45,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            BASE_DIR / 'reminders' / 'templates',  # Add this line if it's not already there
+            BASE_DIR / 'reminders' / 'templates',
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -65,12 +59,8 @@ TEMPLATES = [
     },
 ]
 
-
 WSGI_APPLICATION = 'assignment_reminder.wsgi.application'
 
-
-# Database
-# https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
     'default': {
@@ -79,9 +69,6 @@ DATABASES = {
     }
 }
 
-
-# Password validation
-# https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -98,17 +85,8 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
-# Internationalization
-# https://docs.djangoproject.com/en/5.1/topics/i18n/
-
-# Set the default language for the application
 LANGUAGE_CODE = 'en-us'
 
-# Set the default time zone for your server
- # This sets the server's default time zone to Nairobi time
-
-# Enable Internationalization
 # USE_I18N = True
 
 # Enable timezone support
