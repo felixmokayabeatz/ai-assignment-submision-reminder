@@ -46,6 +46,16 @@ class StudentSubmission(models.Model):
             self.status = self.SubmissionStatus.LATE_SUBMISSION
         
         self.save()
+        
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        if self.submitted_at:
+                student_profile = self.student.student_profile
+                days_before_deadline = (self.assignment.deadline - self.submitted_at).total_seconds() / 86400
+                
+                # Store past behavior
+                student_profile.submission_history.append(days_before_deadline)
+                student_profile.save()
 
     def __str__(self):
         return f"{self.student.username} - {self.assignment.title}"
