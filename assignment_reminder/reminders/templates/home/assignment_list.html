@@ -1,0 +1,23 @@
+{% comment %} {% extends "base.html" %} {% endcomment %}
+
+{% block content %}
+  <h2>Available Assignments</h2>
+  <ul>
+    {% for assignment in assignments %}
+      <li>
+        <a href="{% url 'submit_assignment' assignment.id %}">
+          {{ assignment.title }} (Deadline: {{ assignment.deadline }})
+        </a>
+      </li>
+    {% empty %}
+      <li>No assignments available.</li>
+    {% endfor %}
+  </ul>
+{% endblock %}
+
+{% if user.is_authenticated %}
+  <p>Welcome, {{ user.username }}!</p>
+  <a href="{% url 'logout' %}">Logout</a>
+{% else %}
+  <a href="{% url 'login' %}">Login</a>
+{% endif %}
