@@ -1,5 +1,5 @@
 from django.contrib import admin
-from students.models import StudentSubmission
+from submissions.models import StudentSubmission
 from submissions.models import Assignment
 
 @admin.register(Assignment)
