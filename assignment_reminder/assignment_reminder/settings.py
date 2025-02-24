@@ -123,3 +123,7 @@ app = Celery('assignment_reminder')
 app.config_from_object('django.conf:settings', namespace='CELERY')
 
 app.autodiscover_tasks()
+
+
+
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
