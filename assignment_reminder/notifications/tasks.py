@@ -14,8 +14,9 @@ def send_assignment_reminders():
     now_utc = timezone.now()
     
     upcoming_assignments = Assignment.objects.filter(
-        deadline__range=[now_utc, now_utc + timezone.timedelta(days=7)]
-    ).select_related('course')
+    deadline__range=[now_utc, now_utc + timezone.timedelta(days=7)]
+)
+
     
     print(f"Found {upcoming_assignments.count()} assignments.")
     
@@ -53,8 +54,7 @@ def send_assignment_reminders():
                     send_reminder_email(
                         student,
                         assignment,
-                        days_until_deadline,
-                        local_deadline=local_deadline
+                        days_until_deadline
                     )
                     print(f"Email sent for {assignment.title} to {student.username}.")
                 else:
