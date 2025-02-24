@@ -6,6 +6,11 @@ SECRET_KEY = 'django-insecure-&n1o*ap+gyk%!-8fb@3vaf^#b9o$2&drd+#ftl!in%hor#1_yj
 
 DEBUG = False
 
+try:
+    from .local import *
+except ImportError:
+    pass
+
 ALLOWED_HOSTS = ['*']
 
 
