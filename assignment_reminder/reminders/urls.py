@@ -1,6 +1,5 @@
 from django.urls import path, include
 # from . import send_reminders
-from .home import home
 # from .views import submit_assignment
 from .views import assignment_list, submit_assignment, submit_assignment
 
