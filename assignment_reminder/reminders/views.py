@@ -16,11 +16,10 @@ import os
 
 MODEL_PATH = os.path.join(os.path.dirname(__file__), "../submissions/reminder_model.pkl")
 
-print(MODEL_PATH)
-
 # Load the trained model
 with open(MODEL_PATH, "rb") as file:
     model = pickle.load(file)
+    
 def home(request):
     return render(request, 'home/home.html')
 
