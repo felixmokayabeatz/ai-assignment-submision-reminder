@@ -32,7 +32,7 @@ def submit_assignment(request, assignment_id):
 
     if request.method == "POST":
         submission.submitted_at = timezone.now()
-        submission.is_submitted = True
+        submission.is_submitted = True  # ✅ Ensure it's explicitly set to True
         submission.save()
         messages.success(request, "Assignment submitted successfully!")
         return redirect("assignment_list")
@@ -41,7 +41,8 @@ def submit_assignment(request, assignment_id):
 
 
 
+
 @login_required
 def assignment_list(request):
     assignments = Assignment.objects.all()
-    return render(request, "home/assignment_list.html", {"assignments": assignments})
+    return render(request, "assignment_list.html", {"assignments": assignments})
