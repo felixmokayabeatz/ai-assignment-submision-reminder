@@ -21,7 +21,8 @@ print(MODEL_PATH)
 # Load the trained model
 with open(MODEL_PATH, "rb") as file:
     model = pickle.load(file)
-
+def home(request):
+    return render(request, 'home/home.html')
 
 @login_required
 def submit_assignment(request, assignment_id):
