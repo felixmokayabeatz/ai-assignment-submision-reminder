@@ -2,7 +2,7 @@
   <h2>{{ assignment.title }}</h2>
   <p>Deadline: {{ assignment.deadline }}</p>
 
-  {% if submission %}
+  {% if submission and submission.is_submitted %}
     <p>You submitted this on {{ submission.submitted_at }} ✅</p>
   {% else %}
     <form method="POST">
