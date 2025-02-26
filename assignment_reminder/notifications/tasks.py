@@ -33,40 +33,41 @@ def send_assignment_reminders():
 
         print(f"Processing {pending_submissions.count()} pending submissions for {assignment.title}.")
 
-        for submission in pending_submissions:
-            try:
-                student = submission.student
-                if isinstance(student, str):  # Handle case where student is stored as a username
-                    student = User.objects.get(username=student)
+    for submission in pending_submissions:
+        try:
+            student = submission.student
+            if isinstance(student, str):  # Handle case where student is stored as a username
+                student = User.objects.get(username=student)
 
-                student_profile = StudentProfile.objects.get(user=student)
-                reminder_strategy = student_profile.get_reminder_strategy()
+            # ✅ Double-check submission status before proceeding
+            if submission.is_submitted:
+                print(f"Skipping {student.username}, already submitted {assignment.title}.")
+                continue  # Skip sending email
+
+            student_profile = StudentProfile.objects.get(user=student)
+            reminder_strategy = student_profile.get_reminder_strategy()
+            
+            time_until_deadline = deadline - now_utc
+            days_until_deadline = time_until_deadline.days
+
+            print(f"Days until deadline for {assignment.title}: {days_until_deadline}")
+            print(f"Reminder strategy for {student.username}: {reminder_strategy['follow_up_reminders']}")
+
+            if days_until_deadline in reminder_strategy['follow_up_reminders'] or days_until_deadline <= 3:
+                local_deadline = localtime(deadline)
                 
-                time_until_deadline = deadline - now_utc
-                days_until_deadline = time_until_deadline.days
+                send_reminder_email(student, assignment, days_until_deadline)
+                print(f"Email sent for {assignment.title} to {student.username}.")
+            else:
+                print(f"Not time to send reminder for {assignment.title} to {student.username}.")
 
-                print(f"Days until deadline for {assignment.title}: {days_until_deadline}")
-                print(f"Reminder strategy for {student.username}: {reminder_strategy['follow_up_reminders']}")
+        except User.DoesNotExist:
+            print(f"Error: User with username {submission.student} does not exist.")
+            continue
+        except Exception as e:
+            print(f"Error processing submission for {assignment.title}: {str(e)}")
+            continue
 
-                # Send email only if days left match strategy or are 3 or less
-                if days_until_deadline in reminder_strategy['follow_up_reminders'] or days_until_deadline <= 3:
-                    local_deadline = localtime(deadline)
-                    
-                    send_reminder_email(
-                        student,
-                        assignment,
-                        days_until_deadline
-                    )
-                    print(f"Email sent for {assignment.title} to {student.username}.")
-                else:
-                    print(f"Not time to send reminder for {assignment.title} to {student.username}.")
-
-            except User.DoesNotExist:
-                print(f"Error: User with username {submission.student} does not exist.")
-                continue
-            except Exception as e:
-                print(f"Error processing submission for {assignment.title}: {str(e)}")
-                continue
 
     return "Task finished"
 
