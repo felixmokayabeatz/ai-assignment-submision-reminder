@@ -24,6 +24,12 @@ with open(MODEL_PATH, "rb") as file:
 def home(request):
     return render(request, 'home/home.html')
 
+from django.utils import timezone
+from django.contrib import messages
+from django.shortcuts import get_object_or_404, redirect, render
+from django.contrib.auth.decorators import login_required
+from submissions.models import StudentSubmission, Assignment
+
 @login_required
 def submit_assignment(request, assignment_id):
     assignment = get_object_or_404(Assignment, id=assignment_id)
@@ -31,14 +37,25 @@ def submit_assignment(request, assignment_id):
     submission, created = StudentSubmission.objects.get_or_create(student=student, assignment=assignment)
 
     if request.method == "POST":
-        submission.submitted_at = timezone.now()
-        submission.is_submitted = True  # ✅ Ensure it's explicitly set to True
+        now = timezone.now()
+        submission.submitted_at = now
+        submission.is_submitted = True  
+
+        # Determine submission status
+        if now < assignment.deadline:
+            time_difference = (assignment.deadline - now).total_seconds()
+            if time_difference > 86400:  # More than 1 day early
+                submission.status = StudentSubmission.SubmissionStatus.SUBMITTED_EARLY
+            else:
+                submission.status = StudentSubmission.SubmissionStatus.SUBMITTED_ON_TIME
+        else:
+            submission.status = StudentSubmission.SubmissionStatus.LATE_SUBMISSION
+        
         submission.save()
         messages.success(request, "Assignment submitted successfully!")
         return redirect("assignment_list")
 
     return render(request, "submit_assignment.html", {"assignment": assignment, "submission": submission})
-
 
 
 
