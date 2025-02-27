@@ -1,0 +1,76 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ assignment.title }} - Student Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+</head>
+<body class="bg-gradient-to-br from-blue-800 to-indigo-900 min-h-screen flex items-center justify-center p-4">
+    
+    <div class="max-w-2xl w-full bg-white rounded-xl shadow-2xl overflow-hidden">
+        <!-- Header -->
+        <div class="p-6 border-b">
+            <h1 class="text-2xl font-bold text-indigo-800">{{ assignment.title }}</h1>
+            <p class="text-gray-600 mt-1">
+                <i class="far fa-calendar-alt mr-1"></i> Deadline: {{ assignment.deadline }}
+            </p>
+        </div>
+        
+        <!-- Submission Status or Form -->
+        <div class="p-8 flex flex-col items-center">
+            <div class="w-full max-w-md text-center">
+                {% if submission and submission.is_submitted %}
+                    <div class="bg-green-50 border border-green-200 rounded-lg p-6 mb-6">
+                        <div class="text-green-600 text-5xl mb-3">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-green-700 mb-2">Assignment Submitted</h3>
+                        <p class="text-green-600">
+                            You successfully submitted this assignment on:
+                        </p>
+                        <p class="text-lg font-medium text-green-800 mt-1">
+                            {{ submission.submitted_at }}
+                        </p>
+                    </div>
+                {% else %}
+                    <div class="bg-indigo-50 border border-indigo-200 rounded-lg p-6 mb-6">
+                        <div class="text-indigo-600 text-5xl mb-3">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-indigo-700 mb-2">Ready to Submit?</h3>
+                        <p class="text-indigo-600 mb-4">
+                            Click the button below to submit your assignment.
+                        </p>
+                        <form method="POST">
+                            {% csrf_token %}
+                            <button type="submit" class="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                <i class="fas fa-paper-plane mr-2"></i> Submit Assignment
+                            </button>
+                        </form>
+                    </div>
+                {% endif %}
+                
+                <a href="{% url 'assignment_list' %}" class="inline-flex items-center text-indigo-600 hover:text-indigo-800 font-medium">
+                    <i class="fas fa-arrow-left mr-2"></i> Back to Assignments
+                </a>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="bg-gray-50 p-4 text-center border-t">
+            <p class="text-sm text-gray-500">
+                {% if submission and submission.is_submitted %}
+                    If you have questions about your submission, contact your instructor.
+                {% else %}
+                    Make sure your work is complete before submitting.
+                {% endif %}
+            </p>
+        </div>
+    </div>
+
+</body>
+</html>

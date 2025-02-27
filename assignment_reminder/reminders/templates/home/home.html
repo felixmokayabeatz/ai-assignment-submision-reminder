@@ -1,56 +1,47 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Assignment Reminder</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f4f8;
-            color: #03086b;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-        .container {
-            text-align: center;
-            background: white;
-            padding: 20px 40px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        h1 {
-            margin-bottom: 20px;
-            color: #03086b;
-        }
-        p {
-            font-size: 18px;
-            margin-bottom: 20px;
-        }
-        .button {
-            padding: 10px 20px;
-            background-color: #03086b;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
-            cursor: pointer;
-            text-decoration: none;
-        }
-        .button:hover {
-            background-color: #050b92;
-        }
-    </style>
+    <title>Student Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
 </head>
-<body>
-    <div class="container">
-        <h1>Welcome!</h1>
-        <p>Hello, and welcome to the Assignment Reminder page. Stay on track with your assignments!</p>
-        <a href="#reminder" class="button">Get Started</a>
+<body class="bg-gradient-to-br from-blue-800 to-indigo-900 min-h-screen flex items-center justify-center p-4">
+    
+    <div class="max-w-lg w-full bg-white rounded-xl shadow-2xl overflow-hidden">
+        <!-- Header with logo -->
+        <div class="bg-gray-50 p-6 text-center border-b">
+            <h1 class="text-3xl font-bold text-indigo-800">Student Assignment Portal</h1>
+            <p class="text-gray-500 mt-2">Manage your academic assignments in one place</p>
+        </div>
+        
+        <!-- Main content -->
+        <div class="p-8 text-center">
+            <div class="mb-8">
+                <i class="fas fa-graduation-cap text-6xl text-indigo-600 mb-4"></i>
+                <h2 class="text-2xl font-semibold text-gray-800 mb-3">Welcome to Your Academic Hub</h2>
+                <p class="text-gray-600">Access all your assignments, track deadlines, and submit your work from anywhere.</p>
+            </div>
+            
+            <div class="space-y-4">
+                <a href="{% url 'login' %}" class="block w-full py-3 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition duration-200 text-center">
+                    <i class="fas fa-sign-in-alt mr-2"></i> Login to Your Account
+                </a>
+                
+                <div class="text-sm text-gray-500">
+                    New student? <a href="#" class="text-indigo-600 hover:underline">Contact your administrator</a> for access
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="bg-gray-50 p-4 text-center border-t">
+            <p class="text-sm text-gray-500">© 2025 Student Assignment Portal. All rights reserved.</p>
+        </div>
     </div>
+
 </body>
 </html>
