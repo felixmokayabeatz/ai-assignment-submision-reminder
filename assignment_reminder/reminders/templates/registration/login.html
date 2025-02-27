@@ -31,22 +31,22 @@
                 {% csrf_token %}
                 
                 <div>
-                    <label for="{{ form.username.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Username</label>
+                    <label for="id_username" class="block text-sm font-medium text-gray-700 mb-1">Username</label>
                     <div class="relative">
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             <i class="fas fa-user text-gray-400"></i>
                         </div>
-                        {{ form.username|default:"<input type='text' name='username' id='id_username' class='block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500' placeholder='Your username'>" }}
+                        <input type="text" name="username" id="id_username" class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500" placeholder="Your username">
                     </div>
                 </div>
                 
                 <div>
-                    <label for="{{ form.password.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                    <label for="id_password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
                     <div class="relative">
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             <i class="fas fa-lock text-gray-400"></i>
                         </div>
-                        {{ form.password|default:"<input type='password' name='password' id='id_password' class='block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500' placeholder='Your password'>" }}
+                        <input type="password" name="password" id="id_password" class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500" placeholder="Your password">
                     </div>
                 </div>
                 
