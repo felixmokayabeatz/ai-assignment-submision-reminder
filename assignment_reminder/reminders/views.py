@@ -1,6 +1,5 @@
 import os
 import pickle
-import numpy as np
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
