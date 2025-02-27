@@ -5,40 +5,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Assignments</title>
+    <title>Student Portal</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
 </head>
-<body class="bg-gray-100 text-gray-900">
+<body class="bg-gradient-to-br from-blue-800 to-indigo-900 min-h-screen flex items-center justify-center p-4">
     
-    <div class="max-w-3xl mx-auto mt-10 p-6 bg-white shadow-lg rounded-lg">
-        {% if user.is_authenticated %}
-            <div class="flex justify-between items-center mb-4">
-                <p class="text-lg font-semibold">Welcome, {{ user.username }}!</p>
-                {% comment %} <a href="{% url 'logout' %}" class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition">Logout</a> {% endcomment %}
+    <div class="max-w-lg w-full bg-white rounded-xl shadow-2xl overflow-hidden">
+        <!-- Header with logo -->
+        <div class="bg-gray-50 p-6 text-center border-b">
+            <h1 class="text-3xl font-bold text-indigo-800">Student Assignment Portal</h1>
+            <p class="text-gray-500 mt-2">Manage your academic assignments in one place</p>
+        </div>
+        
+        <!-- Main content -->
+        <div class="p-8 text-center">
+            <div class="mb-8">
+                <i class="fas fa-graduation-cap text-6xl text-indigo-600 mb-4"></i>
+                <h2 class="text-2xl font-semibold text-gray-800 mb-3">Welcome to Your Academic Hub</h2>
+                <p class="text-gray-600">Access all your assignments, track deadlines, and submit your work from anywhere.</p>
             </div>
-        {% else %}
-            <div class="text-right">
-                <a href="{% url 'login' %}" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition">Login</a>
+            
+            <div class="space-y-4">
+                <a href="{% url 'login' %}" class="block w-full py-3 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition duration-200 text-center">
+                    <i class="fas fa-sign-in-alt mr-2"></i> Login to Your Account
+                </a>
+                
+                <div class="text-sm text-gray-500">
+                    New student? <a href="#" class="text-indigo-600 hover:underline">Contact your administrator</a> for access
+                </div>
             </div>
-        {% endif %}
-
-        <h2 class="text-2xl font-bold mb-4 text-center">Available Assignments</h2>
-
-        <ul class="space-y-4">
-            {% for assignment in assignments %}
-                <li class="p-4 rounded-lg shadow-md 
-                           {% if assignment.deadline < now %}bg-red-100 border-red-400{% else %}bg-green-100 border-green-400{% endif %} border">
-                    <a href="{% url 'submit_assignment' assignment.id %}" class="text-lg font-semibold hover:underline">
-                        {{ assignment.title }}
-                    </a>
-                    <p class="text-sm text-gray-600">
-                        Deadline: <span class="font-semibold">{{ assignment.deadline }}</span>
-                    </p>
-                </li>
-            {% empty %}
-                <li class="text-center text-gray-500">No assignments available.</li>
-            {% endfor %}
-        </ul>
+        </div>
+        
+        <!-- Footer -->
+        <div class="bg-gray-50 p-4 text-center border-t">
+            <p class="text-sm text-gray-500">© 2025 Student Assignment Portal. All rights reserved.</p>
+        </div>
     </div>
 
 </body>
