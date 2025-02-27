@@ -6,6 +6,10 @@ from django.utils import timezone
 from django.contrib import messages
 from submissions.models import Assignment, StudentSubmission
 from django.shortcuts import render, get_object_or_404
+from django.utils import timezone
+from datetime import timedelta
+
+now = timezone.now()
 
 MODEL_PATH = os.path.join(os.path.dirname(__file__), "../submissions/reminder_model.pkl")
 
@@ -43,6 +47,9 @@ def submit_assignment(request, assignment_id):
     return render(request, "submit_assignment.html", {"assignment": assignment, "submission": submission})
 
 
+from django.utils import timezone
+from datetime import timedelta
+
 @login_required
 def assignment_list(request):
     assignments = Assignment.objects.all()
@@ -56,9 +63,20 @@ def assignment_list(request):
         assignment for assignment in assignments if assignment.id not in submissions
     ]
     
+    now = timezone.now()
+
+    # Filter assignments with a deadline within the next 7 days, excluding completed ones
+    assignments_deadline = Assignment.objects.filter(
+        deadline__gte=now,  # Deadline is in the future
+        deadline__lte=now + timedelta(days=7)  # Within 7 days
+    ).exclude(id__in=[aid for aid, sub in submissions.items() if sub.is_submitted])
+
+    print(assignments_deadline)
+
     return render(request, "assignment_list.html", {
         "assignments": assignments, 
         "submissions": submissions,
         "completed_assignments": completed_assignments,
-        "unsubmitted_assignments": unsubmitted_assignments
+        "unsubmitted_assignments": unsubmitted_assignments,
+        "assignments_deadline": assignments_deadline
     })
