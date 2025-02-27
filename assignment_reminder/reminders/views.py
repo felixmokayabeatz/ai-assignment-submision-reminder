@@ -9,25 +9,15 @@ from submissions.models import Assignment, StudentSubmission
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # Go one level up
-# MODEL_PATH = os.path.join(BASE_DIR, "submissions", "reminder_model.pkl")
-
-import os
 
 MODEL_PATH = os.path.join(os.path.dirname(__file__), "../submissions/reminder_model.pkl")
 
-# Load the trained model
 with open(MODEL_PATH, "rb") as file:
     model = pickle.load(file)
     
 def home(request):
     return render(request, 'home/home.html')
 
-from django.utils import timezone
-from django.contrib import messages
-from django.shortcuts import get_object_or_404, redirect, render
-from django.contrib.auth.decorators import login_required
-from submissions.models import StudentSubmission, Assignment
 
 @login_required
 def submit_assignment(request, assignment_id):
@@ -40,10 +30,9 @@ def submit_assignment(request, assignment_id):
         submission.submitted_at = now
         submission.is_submitted = True  
 
-        # Determine submission status
         if now < assignment.deadline:
             time_difference = (assignment.deadline - now).total_seconds()
-            if time_difference > 86400:  # More than 1 day early
+            if time_difference > 86400:
                 submission.status = StudentSubmission.SubmissionStatus.SUBMITTED_EARLY
             else:
                 submission.status = StudentSubmission.SubmissionStatus.SUBMITTED_ON_TIME
@@ -57,7 +46,6 @@ def submit_assignment(request, assignment_id):
     return render(request, "submit_assignment.html", {"assignment": assignment, "submission": submission})
 
 
-
 @login_required
 def assignment_list(request):
     assignments = Assignment.objects.all()
@@ -67,5 +55,5 @@ def assignment_list(request):
 
     return render(request, "assignment_list.html", {
         "assignments": assignments, 
-        "submissions": submissions  # Dictionary of submissions mapped to assignments
+        "submissions": submissions
     })
