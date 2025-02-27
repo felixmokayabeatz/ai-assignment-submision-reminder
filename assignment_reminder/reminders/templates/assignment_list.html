@@ -95,7 +95,7 @@
                             </div>
                             <div>
                                 <p class="text-sm text-gray-500">Active Assignments</p>
-                                <p class="text-2xl font-bold text-gray-800">{{ assignments|length }}</p>
+                                <p class="text-2xl font-bold text-gray-800">{{ unsubmitted_assignments|length }}</p>
                             </div>
                         </div>
                     </div>
@@ -107,7 +107,7 @@
                             </div>
                             <div>
                                 <p class="text-sm text-gray-500">Completed</p>
-                                <p class="text-2xl font-bold text-gray-800">0</p>
+                                <p class="text-2xl font-bold text-gray-800"> {{ assignments.is_submitted|length }}</p>
                             </div>
                         </div>
                     </div>
