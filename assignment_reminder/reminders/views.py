@@ -50,7 +50,18 @@ def assignment_list(request):
     student = request.user
     submissions = {sub.assignment.id: sub for sub in StudentSubmission.objects.filter(student=student)}
 
+    print(student)
+ 
+    unsubmitted_assignments = [
+        assignment for assignment in assignments if assignment.id not in submissions
+    ]
+        
+    
+    
+    print([sub.is_submitted for sub in submissions.values()])
+    
     return render(request, "assignment_list.html", {
         "assignments": assignments, 
-        "submissions": submissions
+        "submissions": submissions,
+        "unsubmitted_assignments": unsubmitted_assignments
     })
