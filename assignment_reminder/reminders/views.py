@@ -16,11 +16,10 @@ import os
 
 MODEL_PATH = os.path.join(os.path.dirname(__file__), "../submissions/reminder_model.pkl")
 
-print(MODEL_PATH)
-
 # Load the trained model
 with open(MODEL_PATH, "rb") as file:
     model = pickle.load(file)
+    
 def home(request):
     return render(request, 'home/home.html')
 
@@ -62,4 +61,11 @@ def submit_assignment(request, assignment_id):
 @login_required
 def assignment_list(request):
     assignments = Assignment.objects.all()
-    return render(request, "assignment_list.html", {"assignments": assignments})
+    
+    student = request.user
+    submissions = {sub.assignment.id: sub for sub in StudentSubmission.objects.filter(student=student)}
+
+    return render(request, "assignment_list.html", {
+        "assignments": assignments, 
+        "submissions": submissions  # Dictionary of submissions mapped to assignments
+    })
