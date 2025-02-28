@@ -14,7 +14,6 @@ def send_assignment_reminders():
     
     now_utc = timezone.now()
     
-    # Get assignments whose deadline is in 5 or fewer days
     upcoming_assignments = Assignment.objects.filter(
         deadline__range=[now_utc, now_utc + timezone.timedelta(days=10)]
     )
