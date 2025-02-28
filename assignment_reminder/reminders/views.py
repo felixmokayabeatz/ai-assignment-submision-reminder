@@ -64,11 +64,10 @@ def assignment_list(request):
     ]
     
     now = timezone.now()
-
-    # Filter assignments with a deadline within the next 7 days, excluding completed ones
+    
     assignments_deadline = Assignment.objects.filter(
-        deadline__gte=now,  # Deadline is in the future
-        deadline__lte=now + timedelta(days=7)  # Within 7 days
+        deadline__gte=now,
+        deadline__lte=now + timedelta(days=7)
     ).exclude(id__in=[aid for aid, sub in submissions.items() if sub.is_submitted])
 
     print(assignments_deadline)
