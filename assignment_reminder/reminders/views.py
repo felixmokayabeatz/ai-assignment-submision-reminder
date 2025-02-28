@@ -18,7 +18,6 @@ with open(MODEL_PATH, "rb") as file:
 def home(request):
     return render(request, 'home/home.html')
 
-
 @login_required
 def submit_assignment(request, assignment_id):
     assignment = get_object_or_404(Assignment, id=assignment_id)
