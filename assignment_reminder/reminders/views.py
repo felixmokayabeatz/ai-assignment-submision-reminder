@@ -6,7 +6,6 @@ from django.utils import timezone
 from django.contrib import messages
 from submissions.models import Assignment, StudentSubmission
 from django.shortcuts import render, get_object_or_404
-from django.utils import timezone
 from datetime import timedelta
 
 now = timezone.now()
@@ -46,9 +45,6 @@ def submit_assignment(request, assignment_id):
 
     return render(request, "submit_assignment.html", {"assignment": assignment, "submission": submission})
 
-
-from django.utils import timezone
-from datetime import timedelta
 
 @login_required
 def assignment_list(request):
