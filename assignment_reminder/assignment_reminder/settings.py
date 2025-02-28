@@ -133,3 +133,5 @@ app.autodiscover_tasks()
 
 CELERY_BROKER_URL = 'redis://localhost:6379/0'
 LOGIN_REDIRECT_URL = '/assignments'
+
+LOGOUT_REDIRECT_URL = '/'
