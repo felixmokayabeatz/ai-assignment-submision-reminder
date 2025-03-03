@@ -1,9 +1,10 @@
 import google.generativeai as genai
 import os
 import json
+from django.conf import settings
 
 # Load API key
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+GEMINI_API_KEY = settings.GEMINI_API_KEY
 genai.configure(api_key=GEMINI_API_KEY)
 
 def get_reminder_message(submission_history):
