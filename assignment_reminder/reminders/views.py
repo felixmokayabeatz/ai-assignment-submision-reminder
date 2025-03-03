@@ -12,6 +12,10 @@ now = timezone.now()
 
 MODEL_PATH = os.path.join(os.path.dirname(__file__), "../submissions/reminder_model.pkl")
 
+if not os.path.exists(MODEL_PATH):
+    raise FileNotFoundError(f"Model file not found at {MODEL_PATH}")
+
+
 with open(MODEL_PATH, "rb") as file:
     model = pickle.load(file)
     
