@@ -51,9 +51,7 @@ def submit_assignment(request, assignment_id):
 
 
 @login_required
-def assignment_list(request):
-    print("The fuck")
-    
+def assignment_list(request):    
     assignments = Assignment.objects.all()
     student = request.user
     submissions = {sub.assignment.id: sub for sub in StudentSubmission.objects.filter(student=student)}
