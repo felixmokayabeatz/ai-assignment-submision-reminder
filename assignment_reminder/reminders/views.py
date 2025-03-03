@@ -7,7 +7,7 @@ from django.contrib import messages
 from submissions.models import Assignment, StudentSubmission
 from django.shortcuts import render, get_object_or_404
 from datetime import timedelta
-from utils.llm_utils import get_reminder_message  # Import Gemini function
+from .utils.llm_utils import get_reminder_message  # Import Gemini function
 
 now = timezone.now()
 
@@ -52,6 +52,8 @@ def submit_assignment(request, assignment_id):
 
 @login_required
 def assignment_list(request):
+    print("The fuck")
+    
     assignments = Assignment.objects.all()
     student = request.user
     submissions = {sub.assignment.id: sub for sub in StudentSubmission.objects.filter(student=student)}
@@ -75,6 +77,9 @@ def assignment_list(request):
     # Get Gemini-based prediction and reminder
     prediction, reminder = get_reminder_message(submission_history)
 
+    print(f"Prediction: {prediction}")
+    print(f"Reminder: {reminder}")
+    
     return render(request, "assignment_list.html", {
         "assignments": assignments,
         "submissions": submissions,
