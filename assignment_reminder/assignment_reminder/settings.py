@@ -121,6 +121,8 @@ EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True, cast=bool)
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 
+GEMINI_API_KEY = config('GEMINI_API_KEY')
+
 from celery import Celery
 
 app = Celery('assignment_reminder')
@@ -135,3 +137,4 @@ CELERY_BROKER_URL = 'redis://localhost:6379/0'
 LOGIN_REDIRECT_URL = '/assignments'
 
 LOGOUT_REDIRECT_URL = '/'
+
