@@ -68,6 +68,7 @@ def assignment_list(request):
         deadline__gte=now,
         deadline__lte=now + timedelta(days=7)
     ).exclude(id__in=[aid for aid, sub in submissions.items() if sub.is_submitted])
+    
 
     print(assignments_deadline)
 
