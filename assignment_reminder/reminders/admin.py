@@ -17,10 +17,8 @@ class StudentSubmissionAdmin(admin.ModelAdmin):
     list_display = ('student', 'assignment', 'status', 'submitted_at', 'is_submitted', 'ai_feedback_status')
     search_fields = ('student__username', 'assignment__title')
     list_filter = ('status', 'assignment')
-
-    # Method to display True or False for ai_feedback
+    
     def ai_feedback_status(self, obj):
-        # Check if ai_feedback exists (or is truthy), and return True or False
         return format_html('<span style="color: {};">{}</span>',
                            'green' if obj.ai_feedback else 'red',
                            'True' if obj.ai_feedback else 'False')
