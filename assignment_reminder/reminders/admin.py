@@ -4,13 +4,12 @@ from submissions.models import Assignment
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
 from students.models import StudentProfile
+from django.utils.html import format_html
 
 @admin.register(Assignment)
 class AssignmentAdmin(admin.ModelAdmin):
     list_display = ('title', 'course', 'deadline')
     search_fields = ('title', 'course')
-
-from django.utils.html import format_html
 
 @admin.register(StudentSubmission)
 class StudentSubmissionAdmin(admin.ModelAdmin):
@@ -23,7 +22,6 @@ class StudentSubmissionAdmin(admin.ModelAdmin):
                            'green' if obj.ai_feedback else 'red',
                            'True' if obj.ai_feedback else 'False')
     ai_feedback_status.short_description = 'AI Feedback Status'
-
 
 class StudentProfileInline(admin.StackedInline):
     model = StudentProfile
