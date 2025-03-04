@@ -7,7 +7,7 @@ from django.contrib import messages
 from submissions.models import Assignment, StudentSubmission
 from django.shortcuts import render, get_object_or_404
 from datetime import timedelta
-from .utils.llm_utils import get_reminder_message  # Import Gemini function
+from .utils.llm_utils import get_reminder_message
 
 now = timezone.now()
 
@@ -65,14 +65,12 @@ def assignment_list(request):
         deadline__lte=now + timedelta(days=7)
     ).exclude(id__in=[aid for aid, sub in submissions.items() if sub.is_submitted])
 
-    # Fetch past submission history
     submission_history = [
         (sub.submitted_at - sub.assignment.deadline).total_seconds() / 86400
         for sub in submissions.values()
         if sub.submitted_at is not None
     ]
 
-    # Get Gemini-based prediction and reminder
     prediction, reminder = get_reminder_message(submission_history)
 
     print(f"Prediction: {prediction}")
