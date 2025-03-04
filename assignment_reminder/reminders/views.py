@@ -47,25 +47,29 @@ def submit_assignment(request, assignment_id):
 
     return render(request, "submit_assignment.html", {"assignment": assignment, "submission": submission})
 
+
+
 @login_required
 def assignment_list(request):    
     student = request.user
     assignments = Assignment.objects.all()
-    submissions = {sub.assignment.id: sub for sub in StudentSubmission.objects.filter(student=student)}
+    submissions = StudentSubmission.objects.filter(student=student)
 
-    completed_assignments = sum(1 for sub in submissions.values() if sub.is_submitted)
-    unsubmitted_assignments = [assignment for assignment in assignments if assignment.id not in submissions]
+    completed_assignments = sum(1 for sub in submissions if sub.is_submitted)
+    unsubmitted_assignments = [assignment for assignment in assignments if not any(sub.assignment.id == assignment.id for sub in submissions)]
 
     now = timezone.now()
     assignments_deadline = Assignment.objects.filter(
         deadline__gte=now,
         deadline__lte=now + timezone.timedelta(days=7)
-    ).exclude(id__in=[aid for aid, sub in submissions.items() if sub.is_submitted])
+    ).exclude(id__in=[sub.assignment.id for sub in submissions if sub.is_submitted])
 
+    # Pass the submissions to the template
     return render(request, "assignment_list.html", {
         "assignments": assignments,
         "submissions": submissions,
         "completed_assignments": completed_assignments,
         "unsubmitted_assignments": unsubmitted_assignments,
-        "assignments_deadline": assignments_deadline
+        "assignments_deadline": assignments_deadline,
     })
+
