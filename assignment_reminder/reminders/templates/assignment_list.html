@@ -1,8 +1,5 @@
-
 {% load custom_filters %}
-
 {% load static %}
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -69,7 +66,6 @@
                             Logout
                         </button>
                     </form>
-                
                 {% else %}
                     <a href="{% url 'login' %}" class="flex items-center justify-center p-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded text-sm">
                         <i class="fas fa-sign-in-alt mr-2"></i> Login
@@ -153,43 +149,34 @@
                                             </div>
                                         </div>
 
-                                        {% with submissions|dict_key:assignment.id as submission %}
-                                        {% if submission and submission.is_submitted %}
-                                            <div class="bg-green-50 border border-green-200 rounded-lg p-6 mb-6">
-                                                <div class="text-green-600 text-5xl mb-3">
-                                                    <i class="fas fa-check-circle"></i>
+                                        {% for submission in submissions %}
+                                            {% if submission.assignment.id == assignment.id %}
+                                                <div class="submission">
+                                                    {% if submission.is_submitted %}
+                                                        <div class="bg-green-50 border border-green-200 rounded-lg p-6 mb-6">
+                                                            <div class="text-green-600 text-5xl mb-3">
+                                                                <i class="fas fa-check-circle"></i>
+                                                            </div>
+                                                            <p>Status: {{ submission.get_status_display }}</p>
+                                                            <p>Submission Time: {{ submission.submitted_at }}</p>
+                                                            <p>AI Feedback: {{ submission.ai_feedback }}</p>
+                                                        </div>
+                                                    {% else %}
+                                                        <div class="bg-indigo-50 border border-indigo-200 rounded-lg p-6 mb-6">
+                                                            <div class="text-indigo-600 text-5xl mb-3">
+                                                                <i class="fas fa-file-alt"></i>
+                                                            </div>
+                                                            <h3 class="text-xl font-semibold text-indigo-700 mb-2">Ready to Submit?</h3>
+                                                            <p class="text-indigo-600 mb-4">
+                                                                Click the button below to submit your assignment.
+                                                            </p>
+                                                        </div>
+                                                    {% endif %}
                                                 </div>
-                                                <p>{{ prediction }}
-                                                <p>{{ reminder }}
-                                                <h3 class="text-xl font-semibold text-green-700 mb-2">Assignment Submitted</h3>
-                                                <p class="text-green-600">
-                                                    You successfully submitted this assignment on:
-                                                </p>
-                                                <p class="text-lg font-medium text-green-800 mt-1">
-                                                    {{ submission.submitted_at }}
-                                                </p>
-                                            </div>
-                                        {% else %}
-                                            <div class="bg-indigo-50 border border-indigo-200 rounded-lg p-6 mb-6">
-                                                <div class="text-indigo-600 text-5xl mb-3">
-                                                    <i class="fas fa-file-alt"></i>
-                                                </div>
-                                                <h3 class="text-xl font-semibold text-indigo-700 mb-2">Ready to Submit?</h3>
-                                                <p class="text-indigo-600 mb-4">
-                                                    Click the button below to submit your assignment.
-                                                </p>
-                                            </div>
-                                      
-                                            <div class="flex items-center">
-                                                <span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full mr-2">Pending</span>
-                                                <i class="fas fa-chevron-right text-gray-400"></i>
-                                            </div>
-                                        {% endif %}
-
-                                    
+                                            {% endif %}
+                                        {% endfor %}
                                     </a>
                                 </li>
-                            {% endwith %}
                             {% empty %}
                                 <li class="py-6 text-center">
                                     <div class="text-gray-400 mb-2">
