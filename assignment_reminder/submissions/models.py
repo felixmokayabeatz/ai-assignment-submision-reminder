@@ -2,6 +2,13 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 
+from django.conf import settings
+import google.generativeai as genai
+
+# Load API key
+GEMINI_API_KEY = settings.GEMINI_API_KEY
+genai.configure(api_key=GEMINI_API_KEY)
+
 class Assignment(models.Model):
     title = models.CharField(max_length=200)
     description = models.TextField()
@@ -78,6 +85,8 @@ class StudentSubmission(models.Model):
         For the current assignment titled "{self.assignment.title}", their status is "{self.get_status_display()}".
 
         Generate a unique feedback message to encourage or guide them based on their trends.
+        
+        Make it short as possible as you can.
         """
 
         model = GenerativeModel("gemini-1.5-flash-latest")
