@@ -6,8 +6,6 @@ from django.utils import timezone
 from django.contrib import messages
 from submissions.models import Assignment, StudentSubmission
 from django.shortcuts import render, get_object_or_404
-from datetime import timedelta
-from .utils.llm_utils import get_reminder_message
 
 now = timezone.now()
 
