@@ -49,11 +49,10 @@ def submit_assignment(request, assignment_id):
 
     return render(request, "submit_assignment.html", {"assignment": assignment, "submission": submission})
 
-
 @login_required
 def assignment_list(request):    
-    assignments = Assignment.objects.all()
     student = request.user
+    assignments = Assignment.objects.all()
     submissions = {sub.assignment.id: sub for sub in StudentSubmission.objects.filter(student=student)}
 
     completed_assignments = sum(1 for sub in submissions.values() if sub.is_submitted)
@@ -62,26 +61,13 @@ def assignment_list(request):
     now = timezone.now()
     assignments_deadline = Assignment.objects.filter(
         deadline__gte=now,
-        deadline__lte=now + timedelta(days=7)
+        deadline__lte=now + timezone.timedelta(days=7)
     ).exclude(id__in=[aid for aid, sub in submissions.items() if sub.is_submitted])
 
-    submission_history = [
-        (sub.submitted_at - sub.assignment.deadline).total_seconds() / 86400
-        for sub in submissions.values()
-        if sub.submitted_at is not None
-    ]
-
-    prediction, reminder = get_reminder_message(submission_history)
-
-    print(f"Prediction: {prediction}")
-    print(f"Reminder: {reminder}")
-    
     return render(request, "assignment_list.html", {
         "assignments": assignments,
         "submissions": submissions,
         "completed_assignments": completed_assignments,
         "unsubmitted_assignments": unsubmitted_assignments,
-        "assignments_deadline": assignments_deadline,
-        "prediction": prediction,
-        "reminder": reminder
+        "assignments_deadline": assignments_deadline
     })
