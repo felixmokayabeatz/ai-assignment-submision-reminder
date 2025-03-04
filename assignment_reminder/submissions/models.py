@@ -34,7 +34,9 @@ class StudentSubmission(models.Model):
         choices=SubmissionStatus.choices, 
         default=SubmissionStatus.NOT_STARTED
     )
-    
+
+    ai_feedback = models.TextField(blank=True, null=True)  # Store AI-generated feedback
+
     def update_status(self):
         now = timezone.now()
         if self.submitted_at:
@@ -50,12 +52,39 @@ class StudentSubmission(models.Model):
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         if self.submitted_at:
-                student_profile = self.student.student_profile
-                days_before_deadline = (self.assignment.deadline - self.submitted_at).total_seconds() / 86400
-                
-                # Store past behavior
-                student_profile.submission_history.append(days_before_deadline)
-                student_profile.save()
+            student_profile = self.student.student_profile
+            days_before_deadline = (self.assignment.deadline - self.submitted_at).total_seconds() / 86400
+            
+            # Store past behavior
+            student_profile.submission_history.append(days_before_deadline)
+            student_profile.save()
+            
+            # Generate AI feedback if missing
+            if not self.ai_feedback:
+                self.ai_feedback = self.generate_ai_feedback()
+                self.save()
 
-    def __str__(self):
-        return f"{self.student.username} - {self.assignment.title}"
+    def generate_ai_feedback(self):
+        """
+        Generate unique AI feedback based on procrastination score and submission history.
+        """
+        from google.generativeai import GenerativeModel
+        import json
+
+        student_profile = self.student.student_profile
+        prompt = f"""
+        This student has a procrastination score of {student_profile.procrastination_score} 
+        and the following past submission history: {json.dumps(student_profile.submission_history, indent=2)}.
+        For the current assignment titled "{self.assignment.title}", their status is "{self.get_status_display()}".
+
+        Generate a unique feedback message to encourage or guide them based on their trends.
+        """
+
+        model = GenerativeModel("gemini-1.5-flash-latest")
+        response = model.generate_content(prompt)
+
+        try:
+            return response.candidates[0].content.parts[0].text.strip()
+        except Exception as e:
+            print(f"AI feedback generation error: {e}")
+            return "Keep improving your submission habits!"  # Fallback message
