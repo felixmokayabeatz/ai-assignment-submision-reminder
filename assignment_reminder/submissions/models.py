@@ -66,7 +66,7 @@ class StudentSubmission(models.Model):
 
     def generate_ai_feedback(self):
         """
-        Generate unique AI feedback based on procrastination score and submission history.
+        Generate unique AI feedback based on procrastination score and submission history.Make it short as possible
         """
         from google.generativeai import GenerativeModel
         import json
