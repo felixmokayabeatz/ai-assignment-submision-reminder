@@ -43,6 +43,7 @@ class StudentProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='student_profile')
     procrastination_score = models.FloatField(default=0)
     submission_history = models.JSONField(default=list)
+    year_category = models.ForeignKey(YearCategory, on_delete=models.CASCADE) 
 
     def __str__(self):
         return f"{self.user.username}'s Profile"
