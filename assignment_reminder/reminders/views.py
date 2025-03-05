@@ -6,6 +6,7 @@ from django.utils import timezone
 from django.contrib import messages
 from submissions.models import Assignment, StudentSubmission
 from django.shortcuts import render, get_object_or_404
+from students.models import Course, Enrollment, YearCategory
 
 now = timezone.now()
 
@@ -73,3 +74,26 @@ def assignment_list(request):
         "assignments_deadline": assignments_deadline,
     })
 
+
+
+@login_required
+def enroll(request, course_id):
+    course = get_object_or_404(Course, id=course_id)
+    student_profile = request.user.student_profile
+    # Get the YearCategory for the student's current year
+    current_year_category = YearCategory.objects.get(year=student_profile.year)
+
+    # Filter the units available for that year
+    available_units = course.units.filter(available_for_years=current_year_category)
+
+    if request.method == "POST":
+        # Enroll the student in the course
+        Enrollment.objects.create(student=request.user, course=course)
+        messages.success(request, f"You have successfully enrolled in {course.name}")
+
+        return redirect('course_dashboard')  # Redirect to the course dashboard or assignments
+
+    return render(request, 'enroll_in_course.html', {
+        'course': course,
+        'available_units': available_units,
+    })
