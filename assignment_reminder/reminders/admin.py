@@ -38,3 +38,30 @@ admin.site.unregister(User)
 admin.site.register(User, CustomUserAdmin)
 
 admin.site.register(StudentProfile)
+
+
+
+
+from students.models import Course, Unit, Enrollment
+
+# Customizing the Course admin view
+class CourseAdmin(admin.ModelAdmin):
+    list_display = ('name', 'max_units')  # Display the name and max_units in the list view
+    search_fields = ('name',)  # Add search functionality by course name
+    filter_horizontal = ('students',)  # Make the students field more user-friendly in the form
+
+# Customizing the Unit admin view
+class UnitAdmin(admin.ModelAdmin):
+    list_display = ('course', 'name')  # Display the course and unit name in the list view
+    search_fields = ('name',)  # Add search functionality by unit name
+
+# Customizing the Enrollment admin view
+class EnrollmentAdmin(admin.ModelAdmin):
+    list_display = ('student', 'course', 'enrolled_at')  # Display student, course, and enrollment date
+    search_fields = ('student__username', 'course__name')  # Search by student username and course name
+    list_filter = ('course',)  # Filter by course
+
+# Registering the models with custom admin views
+admin.site.register(Course, CourseAdmin)
+admin.site.register(Unit, UnitAdmin)
+admin.site.register(Enrollment, EnrollmentAdmin)
