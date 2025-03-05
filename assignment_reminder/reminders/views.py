@@ -65,23 +65,26 @@ def assignment_list(request):
         deadline__lte=now + timezone.timedelta(days=7)
     ).exclude(id__in=[sub.assignment.id for sub in submissions if sub.is_submitted])
 
-    # Pass the submissions to the template
+    # Retrieve the courses the student is enrolled in, if necessary
+    courses = Course.objects.all()  # Modify as needed to filter relevant courses
+
     return render(request, "assignment_list.html", {
         "assignments": assignments,
         "submissions": submissions,
         "completed_assignments": completed_assignments,
         "unsubmitted_assignments": unsubmitted_assignments,
         "assignments_deadline": assignments_deadline,
+        "courses": courses,  # Pass the courses context
     })
-
 
 
 @login_required
 def enroll(request, course_id):
     course = get_object_or_404(Course, id=course_id)
     student_profile = request.user.student_profile
+    
     # Get the YearCategory for the student's current year
-    current_year_category = YearCategory.objects.get(year=student_profile.year)
+    current_year_category = student_profile.year_category  # Changed to year_category from year
 
     # Filter the units available for that year
     available_units = course.units.filter(available_for_years=current_year_category)
@@ -91,9 +94,9 @@ def enroll(request, course_id):
         Enrollment.objects.create(student=request.user, course=course)
         messages.success(request, f"You have successfully enrolled in {course.name}")
 
-        return redirect('course_dashboard')  # Redirect to the course dashboard or assignments
+        return redirect('assignment_list')  # Redirect to the course dashboard or assignments
 
-    return render(request, 'enroll_in_course.html', {
+    return render(request, 'enroll.html', {
         'course': course,
         'available_units': available_units,
     })
