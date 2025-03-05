@@ -74,22 +74,17 @@
             </div>
         </div>
 
-        <form method="post">
-            {% csrf_token %}
-            <h3>Available Units for Your Year</h3>
-            <ul>
-                {% for unit in available_units %}
-                    <li>
-                        <input type="checkbox" name="units" value="{{ unit.id }}" id="unit_{{ unit.id }}">
-                        <label for="unit_{{ unit.id }}">{{ unit.name }}</label>
-                    </li>
-                {% empty %}
-                    <li>No units available for your year yet.</li>
-                {% endfor %}
-            </ul>
-        
-            <button type="submit" class="btn btn-primary">Enroll</button>
-        </form>
+        <h2>Enroll in a Course</h2>
+        {% for course in courses %}
+            <div>
+                <h3>{{ course.name }}</h3>  <!-- Display course name -->
+                <a href="{% url 'enroll' course.id %}">Enroll in this course</a>
+            </div>
+        {% empty %}
+            <p>No courses available.</p>
+        {% endfor %}
+
+
         
 
         <!-- Main Content -->
