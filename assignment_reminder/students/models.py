@@ -29,9 +29,17 @@ class Enrollment(models.Model):
         return f"{self.student.username} enrolled in {self.course.name}"
 
 class StudentProfile(models.Model):
+    YEAR_CHOICES = [
+        ('Year 1', 'Year 1'),
+        ('Year 2', 'Year 2'),
+        ('Year 3', 'Year 3'),
+        ('Year 4', 'Year 4'),
+        ]
+        
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='student_profile')
     procrastination_score = models.FloatField(default=0)
     submission_history = models.JSONField(default=list)
+    year = models.CharField(max_length=10, choices=YEAR_CHOICES, default='Year 1')
 
     def __str__(self):
         return f"{self.user.username}'s Profile"
