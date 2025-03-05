@@ -1,0 +1,18 @@
+
+<form method="post">
+    {% csrf_token %}
+    <h3>Available Units for Your Year</h3>
+    <ul>
+        {% for unit in available_units %}
+            <li>
+                <input type="checkbox" name="units" value="{{ unit.id }}" id="unit_{{ unit.id }}">
+                <label for="unit_{{ unit.id }}">{{ unit.name }}</label>
+                <button type="submit" class="btn btn-primary">Enroll</button>
+            </li>
+        {% empty %}
+            <li>No units available for your year yet.</li>
+        {% endfor %}
+    </ul>
+
+
+</form>
