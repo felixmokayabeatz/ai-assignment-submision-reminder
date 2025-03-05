@@ -74,6 +74,24 @@
             </div>
         </div>
 
+        <form method="post">
+            {% csrf_token %}
+            <h3>Available Units for Your Year</h3>
+            <ul>
+                {% for unit in available_units %}
+                    <li>
+                        <input type="checkbox" name="units" value="{{ unit.id }}" id="unit_{{ unit.id }}">
+                        <label for="unit_{{ unit.id }}">{{ unit.name }}</label>
+                    </li>
+                {% empty %}
+                    <li>No units available for your year yet.</li>
+                {% endfor %}
+            </ul>
+        
+            <button type="submit" class="btn btn-primary">Enroll</button>
+        </form>
+        
+
         <!-- Main Content -->
         <div class="flex-1 overflow-y-auto bg-gray-50">
             <!-- Top Navigation Bar -->
