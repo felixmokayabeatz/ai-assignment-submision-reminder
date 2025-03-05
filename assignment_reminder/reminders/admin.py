@@ -44,11 +44,11 @@ admin.site.register(StudentProfile)
 
 from students.models import Course, Unit, Enrollment
 
-# Customizing the Course admin view
 class CourseAdmin(admin.ModelAdmin):
-    list_display = ('name', 'max_units')  # Display the name and max_units in the list view
-    search_fields = ('name',)  # Add search functionality by course name
-    filter_horizontal = ('students',)  # Make the students field more user-friendly in the form
+    list_display = ('name', 'max_units')
+    search_fields = ('name',)
+    # Remove filter_horizontal since the field uses a through model
+
 
 # Customizing the Unit admin view
 class UnitAdmin(admin.ModelAdmin):
