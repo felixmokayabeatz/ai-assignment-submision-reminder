@@ -6,7 +6,7 @@ from django.dispatch import receiver
 class Course(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField()
-    max_units = models.IntegerField(default=7)  # Default max units
+    max_units = models.IntegerField(default=7)
     students = models.ManyToManyField(User, through='Enrollment', related_name='enrolled_courses')
 
     def __str__(self):
@@ -35,8 +35,6 @@ class Enrollment(models.Model):
 
     def __str__(self):
         return f"{self.student.username} enrolled in {self.course.name}"
-
-
 
 
 class StudentProfile(models.Model):
