@@ -62,9 +62,8 @@ class StudentSubmission(models.Model):
             student_profile = self.student.student_profile
             days_before_deadline = (self.assignment.deadline - self.submitted_at).total_seconds() / 86400
             
-            # Store past behavior
-            student_profile.submission_history.append(days_before_deadline)
-            student_profile.save()
+            if not hasattr(student_profile.submission_history, 'append'):
+                student_profile.submission_history = []
             
             # Generate AI feedback if missing
             if not self.ai_feedback:
