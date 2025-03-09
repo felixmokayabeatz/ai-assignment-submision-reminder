@@ -1,11 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
-
 from django.conf import settings
 import google.generativeai as genai
 
-# Load API key
+
 GEMINI_API_KEY = settings.GEMINI_API_KEY
 genai.configure(api_key=GEMINI_API_KEY)
 
