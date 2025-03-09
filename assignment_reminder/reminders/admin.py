@@ -51,8 +51,8 @@ class YearCategoryAdmin(admin.ModelAdmin):
     search_fields = ('year',)
 
 class UnitAdmin(admin.ModelAdmin):
-    list_display = ('name', 'course')  # Display the course and unit name in the list view
-    search_fields = ('name',)  # Add search functionality by unit name
+    list_display = ('name', 'course')
+    search_fields = ('name',)
 
 # Customizing the Enrollment admin view
 class EnrollmentAdmin(admin.ModelAdmin):
