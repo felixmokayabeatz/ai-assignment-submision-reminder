@@ -49,12 +49,9 @@ class CourseAdmin(admin.ModelAdmin):
 class YearCategoryAdmin(admin.ModelAdmin):
     list_display = ['year']
     search_fields = ('year',)
-    # Remove filter_horizontal since the field uses a through model
 
-
-# Customizing the Unit admin view
 class UnitAdmin(admin.ModelAdmin):
-    list_display = ('course', 'name')  # Display the course and unit name in the list view
+    list_display = ('name', 'course')  # Display the course and unit name in the list view
     search_fields = ('name',)  # Add search functionality by unit name
 
 # Customizing the Enrollment admin view
