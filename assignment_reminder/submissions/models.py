@@ -42,7 +42,7 @@ class StudentSubmission(models.Model):
         default=SubmissionStatus.NOT_STARTED
     )
 
-    ai_feedback = models.TextField(blank=True, null=True)  # Store AI-generated feedback
+    ai_feedback = models.TextField(blank=True, null=True)
 
     def update_status(self):
         now = timezone.now()
@@ -65,7 +65,6 @@ class StudentSubmission(models.Model):
             if not hasattr(student_profile.submission_history, 'append'):
                 student_profile.submission_history = []
             
-            # Generate AI feedback if missing
             if not self.ai_feedback:
                 self.ai_feedback = self.generate_ai_feedback()
                 self.save()
