@@ -93,4 +93,4 @@ class StudentSubmission(models.Model):
             return response.candidates[0].content.parts[0].text.strip()
         except Exception as e:
             print(f"AI feedback generation error: {e}")
-            return "Keep improving your submission habits!"  # Fallback message
+            return "Keep improving your submission habits!"
