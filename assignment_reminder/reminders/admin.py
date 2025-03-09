@@ -40,14 +40,11 @@ admin.site.register(User, CustomUserAdmin)
 admin.site.register(StudentProfile)
 
 
-
-
 from students.models import Course, Unit, Enrollment, YearCategory
 
 class CourseAdmin(admin.ModelAdmin):
     list_display = ('name', 'max_units')
     search_fields = ('name',)
-    # Remove filter_horizontal since the field uses a through model
     
 class YearCategoryAdmin(admin.ModelAdmin):
     list_display = ['year']
