@@ -13,7 +13,6 @@ class Assignment(models.Model):
     title = models.CharField(max_length=200)
     description = models.TextField()
     deadline = models.DateTimeField()
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
     unit = models.ForeignKey(Unit, on_delete=models.CASCADE)
 
     def save(self, *args, **kwargs):
