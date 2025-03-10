@@ -7,6 +7,7 @@ from django.contrib import messages
 from submissions.models import Assignment, StudentSubmission
 from django.shortcuts import render, get_object_or_404
 from students.models import Course, Enrollment, YearCategory, Unit
+from django.http import JsonResponse
 
 now = timezone.now()
 
@@ -79,7 +80,7 @@ def assignment_list(request):
         "completed_assignments": completed_assignments,
         "unsubmitted_assignments": unsubmitted_assignments,
         "assignments_deadline": assignments_deadline,
-        "courses": courses,  # Pass enrolled courses
+        "courses": courses,
         "units": units,  # Pass all units in those courses
     })
 
@@ -119,16 +120,10 @@ def enroll(request, course_id):
         'available_units': available_units,
     })
 
-
 @login_required
 def  enroll_course(request):
     courses = Course.objects.all()
     return render(request, 'enroll_course.html', {'courses': courses})
-
-
-
-from django.http import JsonResponse
-
 
 def get_course_for_unit(request, unit_id):
     unit = get_object_or_404(Unit, pk=unit_id)
