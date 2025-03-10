@@ -1,5 +1,5 @@
 from django.urls import path, include
-from .views import assignment_list, submit_assignment, submit_assignment, home, enroll, enroll_course
+from .views import assignment_list, submit_assignment, submit_assignment, home, enroll, enroll_course, get_course_for_unit
 from django.contrib.auth.views import LogoutView
 
 urlpatterns = [
@@ -14,4 +14,8 @@ urlpatterns = [
     
     
     path("enroll/<int:course_id>", enroll_course, name="course_detail"),
+    
+    
+
+    path('get_course_for_unit/<int:unit_id>/', get_course_for_unit, name='get_course_for_unit'),
 ]
