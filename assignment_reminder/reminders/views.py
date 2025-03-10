@@ -6,19 +6,10 @@ from django.utils import timezone
 from django.contrib import messages
 from submissions.models import Assignment, StudentSubmission
 from django.shortcuts import render, get_object_or_404
-from students.models import Course, Enrollment, YearCategory, Unit
+from students.models import Course, Enrollment, Unit
 from django.http import JsonResponse
 
 now = timezone.now()
-
-MODEL_PATH = os.path.join(os.path.dirname(__file__), "../submissions/reminder_model.pkl")
-
-if not os.path.exists(MODEL_PATH):
-    raise FileNotFoundError(f"Model file not found at {MODEL_PATH}")
-
-
-with open(MODEL_PATH, "rb") as file:
-    model = pickle.load(file)
     
 def home(request):
     return render(request, 'home/home.html')
