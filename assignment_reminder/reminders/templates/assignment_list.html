@@ -56,22 +56,15 @@
                         </a>
                     </li>
                     <li>
-                        {% for course in courses %}
-                            <div class="flex items-center p-2 text-gray-700 hover:bg-gray-100 rounded">
-                                <i class="fas fa-graduation-cap mr-2"></i> <!-- Added graduation cap icon -->
-                                <div>
-                                    <h3 class="font-medium">{{ course.name }}</h3>
-                                    <a href="{% url 'enroll' course.id %}" class="text-sm text-indigo-600 hover:text-indigo-800">
-                                        Enroll in this course
-                                    </a>
-                                </div>
+                        <div class="flex items-center p-2 text-gray-700 hover:bg-gray-100 rounded">
+                            <i class="fas fa-graduation-cap mr-2"></i>
+                            <div>
+                                <h3 class="font-medium">{{ course.name }}</h3>
+                                <a href="{% url 'enroll-course' %}" class="text-sm text-indigo-600 hover:text-indigo-800">
+                                    Enroll in a course
+                                </a>
                             </div>
-                        {% empty %}
-                            <div class="flex items-center p-2 text-gray-500">
-                                <i class="fas fa-graduation-cap mr-2"></i> <!-- Added icon even for empty state -->
-                                <p>No courses available.</p>
-                            </div>
-                        {% endfor %}
+                        </div>
                     </li>
                 </ul>
             </div>
