@@ -11,4 +11,7 @@ urlpatterns = [
     path("submit/<int:assignment_id>/", submit_assignment, name="submit_assignment"),
     path('accounts/logout/', LogoutView.as_view(), name='logout'),
     path("accounts/", include("django.contrib.auth.urls")),
+    
+    
+    path("enroll/<int:course_id>", enroll_course, name="course_detail"),
 ]
