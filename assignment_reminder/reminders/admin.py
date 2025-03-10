@@ -8,7 +8,7 @@ from django.utils.html import format_html
 
 @admin.register(Assignment)
 class AssignmentAdmin(admin.ModelAdmin):
-    list_display = ('title', 'course', 'deadline')
+    list_display = ('title', 'unit', 'deadline')
     search_fields = ('title', 'course')
 
 @admin.register(StudentSubmission)
