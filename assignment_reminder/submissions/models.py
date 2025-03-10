@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 from django.conf import settings
 import google.generativeai as genai
+from students.models import Course, Unit
 
 
 GEMINI_API_KEY = settings.GEMINI_API_KEY
@@ -12,15 +13,17 @@ class Assignment(models.Model):
     title = models.CharField(max_length=200)
     description = models.TextField()
     deadline = models.DateTimeField()
-    course = models.CharField(max_length=100)
-    
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    unit = models.ForeignKey(Unit, on_delete=models.CASCADE)
+
     def save(self, *args, **kwargs):
         if self.deadline and self.deadline.tzinfo is None:
             self.deadline = timezone.make_aware(self.deadline, timezone.get_current_timezone())
         super().save(*args, **kwargs)
-    
+
     def __str__(self):
         return self.title
+
 
 class StudentSubmission(models.Model):
     student = models.ForeignKey(User, on_delete=models.CASCADE)
