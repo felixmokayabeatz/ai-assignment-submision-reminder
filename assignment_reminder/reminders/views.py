@@ -100,3 +100,8 @@ def enroll(request, course_id):
         'course': course,
         'available_units': available_units,
     })
+
+@login_required
+def  enroll_course(request):
+    courses = Course.objects.all()
+    return render(request, 'enroll_course.html', {'courses': courses})
