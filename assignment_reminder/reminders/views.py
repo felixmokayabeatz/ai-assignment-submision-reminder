@@ -124,3 +124,12 @@ def enroll(request, course_id):
 def  enroll_course(request):
     courses = Course.objects.all()
     return render(request, 'enroll_course.html', {'courses': courses})
+
+
+
+from django.http import JsonResponse
+
+
+def get_course_for_unit(request, unit_id):
+    unit = get_object_or_404(Unit, pk=unit_id)
+    return JsonResponse({'course_id': unit.course.id})  # Return the associated course ID
