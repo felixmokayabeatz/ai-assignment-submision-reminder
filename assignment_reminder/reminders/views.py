@@ -6,7 +6,7 @@ from django.utils import timezone
 from django.contrib import messages
 from submissions.models import Assignment, StudentSubmission
 from django.shortcuts import render, get_object_or_404
-from students.models import Course, Enrollment, YearCategory
+from students.models import Course, Enrollment, YearCategory, Unit
 
 now = timezone.now()
 
@@ -53,6 +53,14 @@ def submit_assignment(request, assignment_id):
 @login_required
 def assignment_list(request):    
     student = request.user
+    
+    # Get all courses the student is enrolled in
+    enrollments = Enrollment.objects.filter(student=student)
+    courses = [enrollment.course for enrollment in enrollments]  # List of courses
+    units = Unit.objects.filter(course__in=courses)  # Get all units in the courses
+    
+    print(courses)
+
     assignments = Assignment.objects.all()
     submissions = StudentSubmission.objects.filter(student=student)
 
@@ -65,16 +73,14 @@ def assignment_list(request):
         deadline__lte=now + timezone.timedelta(days=7)
     ).exclude(id__in=[sub.assignment.id for sub in submissions if sub.is_submitted])
 
-    # Retrieve the courses the student is enrolled in, if necessary
-    courses = Course.objects.all()  # Modify as needed to filter relevant courses
-
     return render(request, "assignment_list.html", {
         "assignments": assignments,
         "submissions": submissions,
         "completed_assignments": completed_assignments,
         "unsubmitted_assignments": unsubmitted_assignments,
         "assignments_deadline": assignments_deadline,
-        "courses": courses,  # Pass the courses context
+        "courses": courses,  # Pass enrolled courses
+        "units": units,  # Pass all units in those courses
     })
 
 
@@ -82,24 +88,37 @@ def assignment_list(request):
 def enroll(request, course_id):
     course = get_object_or_404(Course, id=course_id)
     student_profile = request.user.student_profile
-    
-    # Get the YearCategory for the student's current year
-    current_year_category = student_profile.year_category  # Changed to year_category from year
+    current_year_category = student_profile.year_category  
 
-    # Filter the units available for that year
+    # Get available units for the student's year
     available_units = course.units.filter(available_for_years=current_year_category)
 
     if request.method == "POST":
-        # Enroll the student in the course
-        Enrollment.objects.create(student=request.user, course=course)
-        messages.success(request, f"You have successfully enrolled in {course.name}")
+        selected_unit_ids = request.POST.getlist("units")  # Get selected units from the form
 
-        return redirect('assignment_list')  # Redirect to the course dashboard or assignments
+        if not selected_unit_ids:
+            messages.error(request, "You must select at least one unit to enroll.")
+            return redirect('enroll', course_id=course.id)
+
+        # Try to find an existing enrollment for this student in this course
+        enrollment = Enrollment.objects.filter(student=request.user, course=course).first()
+
+        if not enrollment:
+            # If no enrollment exists, create a new one
+            enrollment = Enrollment.objects.create(student=request.user, course=course)
+
+        # Add selected units to the enrollment (make sure Enrollment has a ManyToManyField to Unit)
+        enrollment.units.add(*Unit.objects.filter(id__in=selected_unit_ids))
+
+        messages.success(request, f"You have successfully enrolled in {course.name} and selected {len(selected_unit_ids)} units.")
+
+        return redirect('assignment_list')
 
     return render(request, 'enroll.html', {
         'course': course,
         'available_units': available_units,
     })
+
 
 @login_required
 def  enroll_course(request):
