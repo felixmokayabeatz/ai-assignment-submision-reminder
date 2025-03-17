@@ -49,7 +49,6 @@ def assignment_list(request):
     courses = [enrollment.course for enrollment in enrollments]  # List of courses
     units = Unit.objects.filter(course__in=courses)  # Get all units in the courses
     
-    print(courses)
 
     assignments = Assignment.objects.all()
     submissions = StudentSubmission.objects.filter(student=student)
@@ -140,8 +139,7 @@ def chat_ai(request):
         data = json.loads(request.body)
         user_message = data.get("message", "").strip()
         chat_mode = data.get("chat_mode", "controlled").strip()  # Default to 'controlled'
-        
-        print(chat_mode)
+    
 
         if not user_message:
             return JsonResponse({"response": "Please type a message."})
@@ -153,7 +151,6 @@ def chat_ai(request):
 
         # Construct the AI prompt based on chat mode
         if chat_mode == "controlled":
-            print("Here")
             assignment = getattr(student_profile, "current_assignment", None)
             if assignment:
                 prompt = f"""
