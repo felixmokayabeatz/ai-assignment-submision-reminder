@@ -295,18 +295,41 @@
         document.getElementById("chat-toggle").addEventListener("click", function () {
             document.getElementById("chat-window").style.display = "block";
         });
-        document.getElementById("chat-close").addEventListener("click", function () {
-            document.getElementById("chat-window").style.display = "none";
+ 
+        document.getElementById("chat-close").addEventListener("click", function() {
+            let chatWindow = document.getElementById("chat-window");
+            chatWindow.style.display = "none";
         });
-        document.getElementById("chat-send").addEventListener("click", function () {
+         
+        document.getElementById("chat-send").addEventListener("click", async function () {
             let message = document.getElementById("chat-message").value;
             if (message.trim()) {
                 let chatBody = document.getElementById("chat-body");
+        
+                // Display user's message
                 chatBody.innerHTML += `<div class='text-right text-indigo-700 font-bold my-2'>${message}</div>`;
                 document.getElementById("chat-message").value = "";
                 chatBody.scrollTop = chatBody.scrollHeight;
+        
+                // Send message to backend
+                try {
+                    let response = await fetch("/chat-ai/", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ message: message }),
+                    });
+                    let data = await response.json();
+        
+                    // Display AI response
+                    chatBody.innerHTML += `<div class='text-left text-gray-700 my-2'>${data.response}</div>`;
+                    chatBody.scrollTop = chatBody.scrollHeight;
+                } catch (error) {
+                    console.error("Error:", error);
+                    chatBody.innerHTML += `<div class='text-left text-red-500 my-2'>AI is unavailable.</div>`;
+                }
             }
         });
+        
     </script>
 </body>
 </html>
