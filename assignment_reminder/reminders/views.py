@@ -119,42 +119,58 @@ def get_course_for_unit(request, unit_id):
     return JsonResponse({'course_id': unit.course.id})  # Return the associated course ID
 
 
-
-
+from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
 from google.generativeai import GenerativeModel
 
 @csrf_exempt
 def chat_ai(request):
+    user = request.user
     if request.method == "POST":
         try:
             data = json.loads(request.body)
-            user_message = data.get("message", "")
+            user_message = data.get("message", "").strip()
 
             if not user_message:
                 return JsonResponse({"response": "Please type a message."})
 
-            prompt = f"Reply the students' assignment submission history :{shortly to: {user_message}"
-            
-             prompt = f"""
-                This student has a procrastination score of {student_profile.procrastination_score} 
-                and the following past submission history: {json.dumps(student_profile.submission_history, indent=2)}.
-                For the current assignment titled "{self.assignment.title}", their status is "{self.get_status_display()}".
+            # Ensure the user has a student profile
+            if not hasattr(user, "student") or not hasattr(user.student, "student_profile"):
+                return JsonResponse({"response": "Student profile not found."})
 
-                Generate a unique feedback message to encourage or guide them based on their trends.
+            student_profile = user.student.student_profile
+            assignment = student_profile.current_assignment  # Ensure this attribute exists
+
+            if not assignment:
+                return JsonResponse({"response": "No active assignment found."})
+
+            prompt = f"""
+                The student has a procrastination score of {student_profile.procrastination_score}
+                and past submission history: {json.dumps(student_profile.submission_history, indent=2)}.
                 
-                Make it short as possible as you can.
-                """
+                For the current assignment titled "{assignment.title}", their status is "{assignment.get_status_display()}".
+                Reply to this student's message concisely: "{user_message}".
+            """
+
             model = GenerativeModel("gemini-1.5-flash-latest")
             response = model.generate_content(prompt)
 
-            ai_response = response.candidates[0].content.parts[0].text.strip()
+            if response and response.candidates:
+                ai_response = response.candidates[0].content.parts[0].text.strip()
+                return JsonResponse({"response": ai_response})
 
-            return JsonResponse({"response": ai_response})
+            return JsonResponse({"response": "AI could not generate a response."})
+
+        except json.JSONDecodeError:
+            return JsonResponse({"response": "Invalid JSON format."})
+
+        except AttributeError as e:
+            print(f"Attribute Error: {e}")
+            return JsonResponse({"response": "Missing required user attributes."})
 
         except Exception as e:
             print(f"AI chat response error: {e}")
-            return JsonResponse({"response": "Error generating response."})
+            return JsonResponse({"response": "An error occurred while generating the response."})
 
-    return JsonResponse({"response": "Invalid request."})
+    return JsonResponse({"response": "Invalid request method."})
