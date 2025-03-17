@@ -117,3 +117,34 @@ def  enroll_course(request):
 def get_course_for_unit(request, unit_id):
     unit = get_object_or_404(Unit, pk=unit_id)
     return JsonResponse({'course_id': unit.course.id})  # Return the associated course ID
+
+
+
+
+from django.views.decorators.csrf import csrf_exempt
+import json
+from google.generativeai import GenerativeModel
+
+@csrf_exempt
+def chat_ai(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            user_message = data.get("message", "")
+
+            if not user_message:
+                return JsonResponse({"response": "Please type a message."})
+
+            prompt = f"Reply shortly to: {user_message}"
+            model = GenerativeModel("gemini-1.5-flash-latest")
+            response = model.generate_content(prompt)
+
+            ai_response = response.candidates[0].content.parts[0].text.strip()
+
+            return JsonResponse({"response": ai_response})
+
+        except Exception as e:
+            print(f"AI chat response error: {e}")
+            return JsonResponse({"response": "Error generating response."})
+
+    return JsonResponse({"response": "Invalid request."})
