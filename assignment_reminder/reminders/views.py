@@ -135,7 +135,17 @@ def chat_ai(request):
             if not user_message:
                 return JsonResponse({"response": "Please type a message."})
 
-            prompt = f"Reply shortly to: {user_message}"
+            prompt = f"Reply the students' assignment submission history :{shortly to: {user_message}"
+            
+             prompt = f"""
+                This student has a procrastination score of {student_profile.procrastination_score} 
+                and the following past submission history: {json.dumps(student_profile.submission_history, indent=2)}.
+                For the current assignment titled "{self.assignment.title}", their status is "{self.get_status_display()}".
+
+                Generate a unique feedback message to encourage or guide them based on their trends.
+                
+                Make it short as possible as you can.
+                """
             model = GenerativeModel("gemini-1.5-flash-latest")
             response = model.generate_content(prompt)
 
