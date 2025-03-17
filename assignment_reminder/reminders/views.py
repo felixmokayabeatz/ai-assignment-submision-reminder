@@ -156,14 +156,14 @@ def chat_ai(request):
 
             For the current assignment titled "{assignment.title}", their status is "{assignment.get_status_display()}".
 
-            Reply to this student's message concisely: "{user_message}".
+            Reply to this student's message concisely based on the scores above and advice them: "{user_message}".
             """
         else:
             prompt = f"""
             The student has a procrastination score of {student_profile.procrastination_score}
             and past submission history: {json.dumps(student_profile.submission_history, indent=2)}.
 
-            There is no active assignment. Reply to this student's message concisely: "{user_message}".
+            There is no active assignment. Reply to this student's message concisely based on the scores above and advice them: "{user_message}".
             """
         
         # Generate the AI response
