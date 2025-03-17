@@ -118,7 +118,6 @@ def get_course_for_unit(request, unit_id):
     unit = get_object_or_404(Unit, pk=unit_id)
     return JsonResponse({'course_id': unit.course.id})  # Return the associated course ID
 
-
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
@@ -126,51 +125,65 @@ from google.generativeai import GenerativeModel
 
 @csrf_exempt
 def chat_ai(request):
+    if request.method != "POST":
+        return JsonResponse({"response": "Invalid request method."})
+
+    if not request.user.is_authenticated:
+        return JsonResponse({"response": "User not authenticated."})
+
     user = request.user
-    if request.method == "POST":
-        try:
-            data = json.loads(request.body)
-            user_message = data.get("message", "").strip()
 
-            if not user_message:
-                return JsonResponse({"response": "Please type a message."})
+    try:
+        data = json.loads(request.body)
+        user_message = data.get("message", "").strip()
 
-            # Ensure the user has a student profile
-            if not hasattr(user, "student") or not hasattr(user.student, "student_profile"):
-                return JsonResponse({"response": "Student profile not found."})
+        if not user_message:
+            return JsonResponse({"response": "Please type a message."})
 
-            student_profile = user.student.student_profile
-            assignment = student_profile.current_assignment  # Ensure this attribute exists
+        # Ensure the user has a student profile
+        student_profile = getattr(user, "student_profile", None)
+        if not student_profile:
+            return JsonResponse({"response": "Student profile not found."})
 
-            if not assignment:
-                return JsonResponse({"response": "No active assignment found."})
+        # Ensure the student has an active assignment
+        assignment = getattr(student_profile, "current_assignment", None)
 
+        # Construct the AI prompt (use assignment info if available, else provide a general response)
+        if assignment:
             prompt = f"""
-                The student has a procrastination score of {student_profile.procrastination_score}
-                and past submission history: {json.dumps(student_profile.submission_history, indent=2)}.
-                
-                For the current assignment titled "{assignment.title}", their status is "{assignment.get_status_display()}".
-                Reply to this student's message concisely: "{user_message}".
+            The student has a procrastination score of {student_profile.procrastination_score}
+            and past submission history: {json.dumps(student_profile.submission_history, indent=2)}.
+
+            For the current assignment titled "{assignment.title}", their status is "{assignment.get_status_display()}".
+
+            Reply to this student's message concisely: "{user_message}".
             """
+        else:
+            prompt = f"""
+            The student has a procrastination score of {student_profile.procrastination_score}
+            and past submission history: {json.dumps(student_profile.submission_history, indent=2)}.
 
-            model = GenerativeModel("gemini-1.5-flash-latest")
-            response = model.generate_content(prompt)
+            There is no active assignment. Reply to this student's message concisely: "{user_message}".
+            """
+        
+        # Generate the AI response
+        model = GenerativeModel("gemini-1.5-flash-latest")
+        response = model.generate_content(prompt)
 
-            if response and response.candidates:
-                ai_response = response.candidates[0].content.parts[0].text.strip()
-                return JsonResponse({"response": ai_response})
+        # Safely extract AI response
+        if response and response.candidates:
+            ai_response = response.candidates[0].content.parts[0].text.strip()
+            return JsonResponse({"response": ai_response or "AI could not generate a meaningful response."})
 
-            return JsonResponse({"response": "AI could not generate a response."})
+        return JsonResponse({"response": "AI could not generate a response."})
 
-        except json.JSONDecodeError:
-            return JsonResponse({"response": "Invalid JSON format."})
+    except json.JSONDecodeError:
+        return JsonResponse({"response": "Invalid JSON format."})
 
-        except AttributeError as e:
-            print(f"Attribute Error: {e}")
-            return JsonResponse({"response": "Missing required user attributes."})
+    except AttributeError as e:
+        print(f"Attribute Error: {e}")
+        return JsonResponse({"response": "A required user attribute is missing."})
 
-        except Exception as e:
-            print(f"AI chat response error: {e}")
-            return JsonResponse({"response": "An error occurred while generating the response."})
-
-    return JsonResponse({"response": "Invalid request method."})
+    except Exception as e:
+        print(f"AI chat response error: {e}")
+        return JsonResponse({"response": "An unexpected error occurred while generating the response."})
