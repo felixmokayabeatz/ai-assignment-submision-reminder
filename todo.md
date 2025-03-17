@@ -2,3 +2,4 @@
 
 - [x] Student to have a fixed course
 - [x] Link assignment to units
+- [ ] Upload real assignments attachments
