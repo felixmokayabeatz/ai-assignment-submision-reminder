@@ -278,7 +278,15 @@
         <div id="chat-header">
             AI Assistant
             <i id="chat-close" class="fas fa-times cursor-pointer"></i>
+
+      
         </div>
+
+        <div class="chat-buttons">
+            <button id="free-chat-btn">Free Chat</button>
+            <button id="controlled-chat-btn">Controlled Chat</button>
+        </div>
+
         <div id="chat-body">
             <p class="text-gray-500 text-sm">Ask anything about your assignments.</p>
         </div>
@@ -297,6 +305,19 @@
     <script>
         document.querySelector(".fa-graduation-cap").parentElement.addEventListener("click", function () {
             document.getElementById("unit-dropdown").classList.toggle("hidden");
+        });
+
+        let chatMode = "controlled"; // Default mode is "controlled"
+
+        // Button click handlers
+        document.getElementById("free-chat-btn").addEventListener("click", () => {
+            chatMode = "free"; // Switch to free chat mode
+            console.log("Switched to Free Chat Mode");
+        });
+
+        document.getElementById("controlled-chat-btn").addEventListener("click", () => {
+            chatMode = "controlled"; // Switch to controlled chat mode
+            console.log("Switched to Controlled Chat Mode");
         });
 
 
@@ -324,7 +345,7 @@
                     let response = await fetch("/chat-ai/", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ message: message }),
+                        body: JSON.stringify({ message: message, chat_mode: chatMode }),
                     });
                     let data = await response.json();
         
