@@ -9,6 +9,53 @@
     <title>Assignments Dashboard - Student Portal</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    
+
+    <style>
+        #chat-window {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 300px;
+            background: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            display: none;
+            overflow: hidden;
+        }
+        #chat-header {
+            background: #4f46e5;
+            color: white;
+            padding: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        #chat-body {
+            max-height: 300px;
+            overflow-y: auto;
+            padding: 10px;
+        }
+        #chat-input {
+            display: flex;
+            border-top: 1px solid #ddd;
+        }
+        #chat-input input {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            outline: none;
+        }
+        #chat-input button {
+            background: #4f46e5;
+            color: white;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body class="bg-gradient-to-br from-blue-800 to-indigo-900 min-h-screen">
     
@@ -218,11 +265,47 @@
             </div>
         </div>
     </div>
+
+    <div id="chat-window">
+        <div id="chat-header">
+            AI Assistant
+            <i id="chat-close" class="fas fa-times cursor-pointer"></i>
+        </div>
+        <div id="chat-body">
+            <p class="text-gray-500 text-sm">Ask anything about your assignments.</p>
+        </div>
+        <div id="chat-input">
+            <input type="text" id="chat-message" placeholder="Type a message...">
+            <button id="chat-send"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <button id="chat-toggle" class="fixed bottom-5 right-5 bg-indigo-600 text-white p-3 rounded-full shadow-lg">
+        <i class="fas fa-comment"></i>
+    </button>
+
     
 
     <script>
         document.querySelector(".fa-graduation-cap").parentElement.addEventListener("click", function () {
             document.getElementById("unit-dropdown").classList.toggle("hidden");
+        });
+
+
+        document.getElementById("chat-toggle").addEventListener("click", function () {
+            document.getElementById("chat-window").style.display = "block";
+        });
+        document.getElementById("chat-close").addEventListener("click", function () {
+            document.getElementById("chat-window").style.display = "none";
+        });
+        document.getElementById("chat-send").addEventListener("click", function () {
+            let message = document.getElementById("chat-message").value;
+            if (message.trim()) {
+                let chatBody = document.getElementById("chat-body");
+                chatBody.innerHTML += `<div class='text-right text-indigo-700 font-bold my-2'>${message}</div>`;
+                document.getElementById("chat-message").value = "";
+                chatBody.scrollTop = chatBody.scrollHeight;
+            }
         });
     </script>
 </body>
