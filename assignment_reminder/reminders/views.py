@@ -118,6 +118,9 @@ def get_course_for_unit(request, unit_id):
     unit = get_object_or_404(Unit, pk=unit_id)
     return JsonResponse({'course_id': unit.course.id})  # Return the associated course ID
 
+
+
+
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
@@ -136,6 +139,9 @@ def chat_ai(request):
     try:
         data = json.loads(request.body)
         user_message = data.get("message", "").strip()
+        chat_mode = data.get("chat_mode", "controlled").strip()  # Default to 'controlled'
+        
+        print(chat_mode)
 
         if not user_message:
             return JsonResponse({"response": "Please type a message."})
@@ -145,27 +151,31 @@ def chat_ai(request):
         if not student_profile:
             return JsonResponse({"response": "Student profile not found."})
 
-        # Ensure the student has an active assignment
-        assignment = getattr(student_profile, "current_assignment", None)
+        # Construct the AI prompt based on chat mode
+        if chat_mode == "controlled":
+            print("Here")
+            assignment = getattr(student_profile, "current_assignment", None)
+            if assignment:
+                prompt = f"""
+                The student has a procrastination score of {student_profile.procrastination_score}
+                and past submission history: {json.dumps(student_profile.submission_history, indent=2)}.
 
-        # Construct the AI prompt (use assignment info if available, else provide a general response)
-        if assignment:
-            prompt = f"""
-            The student has a procrastination score of {student_profile.procrastination_score}
-            and past submission history: {json.dumps(student_profile.submission_history, indent=2)}.
+                For the current assignment titled "{assignment.title}", their status is "{assignment.get_status_display()}".
 
-            For the current assignment titled "{assignment.title}", their status is "{assignment.get_status_display()}".
+                Reply to this student's message concisely  advice them on the data above: "{user_message}".
+                """
+            else:
+                prompt = f"""
+                The student has a procrastination score of {student_profile.procrastination_score}
+                and past submission history: {json.dumps(student_profile.submission_history, indent=2)}.
 
-            Reply to this student's message concisely based on the scores above and advice them: "{user_message}".
-            """
+                There is no active assignment. Reply to this student's message concisely and advice them on the data above: "{user_message}".
+                """
         else:
-            prompt = f"""
-            The student has a procrastination score of {student_profile.procrastination_score}
-            and past submission history: {json.dumps(student_profile.submission_history, indent=2)}.
-
-            There is no active assignment. Reply to this student's message concisely based on the scores above and advice them: "{user_message}".
-            """
+            # Free chat mode: no need to consider assignments
+            prompt =  f"{user_message}"
         
+
         # Generate the AI response
         model = GenerativeModel("gemini-1.5-flash-latest")
         response = model.generate_content(prompt)
