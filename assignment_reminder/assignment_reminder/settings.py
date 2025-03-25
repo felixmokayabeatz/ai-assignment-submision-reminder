@@ -138,3 +138,7 @@ LOGIN_REDIRECT_URL = '/assignments'
 
 LOGOUT_REDIRECT_URL = '/'
 
+import os
+
+MEDIA_URL = '/media/'  # URL to access uploaded files
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # Directory to store uploaded files
