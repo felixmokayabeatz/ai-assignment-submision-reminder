@@ -1,6 +1,8 @@
 from django.urls import path, include
 from .views import assignment_list, submit_assignment, submit_assignment, home, enroll, enroll_course, get_course_for_unit, chat_ai
 from django.contrib.auth.views import LogoutView
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('', home, name='home'),
@@ -21,3 +23,7 @@ urlpatterns = [
     
     path("chat-ai/", chat_ai, name="chat-ai"),
 ]
+
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
