@@ -14,6 +14,7 @@ class Assignment(models.Model):
     description = models.TextField()
     deadline = models.DateTimeField()
     unit = models.ForeignKey(Unit, on_delete=models.CASCADE)
+    attachment = models.FileField(upload_to='assignments/', null=True, blansk=True)
 
     def save(self, *args, **kwargs):
         if self.deadline and self.deadline.tzinfo is None:
