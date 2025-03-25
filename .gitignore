@@ -22,6 +22,7 @@ Thumbs.db
 /pyvenv.cfg
 
 **/*.pyc
+*pyc
 **/__pycache__/
 
 .env
