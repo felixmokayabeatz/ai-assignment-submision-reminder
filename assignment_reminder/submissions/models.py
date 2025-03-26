@@ -47,14 +47,19 @@ class Assignment(models.Model):
     def __str__(self):
         return self.title
 
-def assignment_upload_path_student(instance, filename, user):
+def assignment_upload_path_student(instance, filename):
+    user = instance.student  # Get user from the submission instance
 
-    year_of_study = instance.unit.available_for_years.first().year if instance.unit.available_for_years.exists() else "unknown"
+    year_of_study = (
+        instance.assignment.unit.available_for_years.first().year
+        if instance.assignment.unit.available_for_years.exists()
+        else "unknown"
+    )
 
-    course_name = slugify(instance.unit.course.name)
-    unit_name = slugify(instance.unit.name)
-
+    course_name = slugify(instance.assignment.unit.course.name)
+    unit_name = slugify(instance.assignment.unit.name)
     student_id = user.id
+
     directory = f"submitted_assignments/{year_of_study}/{course_name}/{unit_name}/{student_id}"
 
     base_filename, ext = os.path.splitext(filename)
@@ -68,6 +73,7 @@ def assignment_upload_path_student(instance, filename, user):
         counter += 1
 
     return os.path.join(directory, new_filename)
+
 
 class StudentSubmission(models.Model):
     student = models.ForeignKey(User, on_delete=models.CASCADE)
