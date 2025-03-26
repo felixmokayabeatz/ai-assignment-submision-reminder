@@ -4,16 +4,14 @@ from django.utils import timezone
 from django.conf import settings
 import google.generativeai as genai
 from students.models import Course, Unit
-from django.utils.text import slugify
 import os
+from django.utils.text import slugify
 
 GEMINI_API_KEY = settings.GEMINI_API_KEY
 genai.configure(api_key=GEMINI_API_KEY)
 
 
 def assignment_upload_path(instance, filename):
-    import os
-    from django.utils.text import slugify
 
     year_of_study = instance.unit.available_for_years.first().year if instance.unit.available_for_years.exists() else "unknown"
 
@@ -22,9 +20,8 @@ def assignment_upload_path(instance, filename):
 
     directory = f"assignments/{year_of_study}/{course_name}/{unit_name}/"
 
-    # Ensure unique filename
     base_filename, ext = os.path.splitext(filename)
-    base_filename = slugify(base_filename)  # Make it URL safe
+    base_filename = slugify(base_filename)
 
     new_filename = f"{base_filename}{ext}"
     counter = 1
