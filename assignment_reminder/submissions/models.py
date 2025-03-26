@@ -47,14 +47,15 @@ class Assignment(models.Model):
     def __str__(self):
         return self.title
 
-def assignment_upload_path_student(instance, filename):
+def assignment_upload_path_student(instance, filename, user):
 
     year_of_study = instance.unit.available_for_years.first().year if instance.unit.available_for_years.exists() else "unknown"
 
     course_name = slugify(instance.unit.course.name)
     unit_name = slugify(instance.unit.name)
 
-    directory = f"assignments/{year_of_study}/{course_name}/{unit_name}/"
+    student_id = user.id
+    directory = f"submitted_assignments/{year_of_study}/{course_name}/{unit_name}/{student_id}"
 
     base_filename, ext = os.path.splitext(filename)
     base_filename = slugify(base_filename)
