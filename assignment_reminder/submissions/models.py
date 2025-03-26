@@ -47,12 +47,33 @@ class Assignment(models.Model):
     def __str__(self):
         return self.title
 
+def assignment_upload_path_student(instance, filename):
+
+    year_of_study = instance.unit.available_for_years.first().year if instance.unit.available_for_years.exists() else "unknown"
+
+    course_name = slugify(instance.unit.course.name)
+    unit_name = slugify(instance.unit.name)
+
+    directory = f"assignments/{year_of_study}/{course_name}/{unit_name}/"
+
+    base_filename, ext = os.path.splitext(filename)
+    base_filename = slugify(base_filename)
+
+    new_filename = f"{base_filename}{ext}"
+    counter = 1
+
+    while os.path.exists(os.path.join(settings.MEDIA_ROOT, directory, new_filename)):
+        new_filename = f"{base_filename}_{counter}{ext}"
+        counter += 1
+
+    return os.path.join(directory, new_filename)
 
 class StudentSubmission(models.Model):
     student = models.ForeignKey(User, on_delete=models.CASCADE)
     assignment = models.ForeignKey(Assignment, on_delete=models.CASCADE)
     submitted_at = models.DateTimeField(null=True, blank=True)
     is_submitted = models.BooleanField(default=False)
+    student_attachment = models.FileField(upload_to=assignment_upload_path_student, null=True, blank=True)
     
     class SubmissionStatus(models.TextChoices):
         NOT_STARTED = 'NS', 'Not Started'
