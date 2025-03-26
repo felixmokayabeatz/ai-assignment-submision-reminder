@@ -63,14 +63,14 @@
             padding: 10px;
             margin: 5px;
             cursor: pointer;
-            background-color: lightgray; /* Default button color */
+            background-color: lightgray;
             border: 1px solid #ccc;
             border-radius: 5px;
         }
         
         .chat-buttons button.active {
-            background-color: #4CAF50; /* Green color for active button */
-            color: white;  /* White text on active button */
+            background-color: #4CAF50;
+            color: white;
         }
         
     </style>
@@ -78,7 +78,6 @@
 <body class="bg-gradient-to-br from-blue-800 to-indigo-900 min-h-screen">
     
     <div class="flex h-screen">
-        <!-- Left Sidebar -->
         <div class="w-64 bg-white shadow-lg overflow-y-auto">
             <div class="p-4 border-b border-gray-200">
                 <h1 class="text-xl font-bold text-indigo-800">Student Portal</h1>
@@ -343,9 +342,8 @@
             document.getElementById("unit-dropdown").classList.toggle("hidden");
         });
 
-        let chatMode = "controlled"; // Default mode is "controlled"
+        let chatMode = "controlled";
 
-        // Button click handlers
         document.getElementById("free-chat-btn").addEventListener("click", () => {
             chatMode = "free"; // Switch to free chat mode
             console.log("Switched to Free Chat Mode");
