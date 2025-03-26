@@ -45,12 +45,17 @@
                         <p class="text-indigo-600 mb-4">
                             Click the button below to submit your assignment.
                         </p>
-                        <form method="POST">
+                        <form method="POST" enctype="multipart/form-data">
                             {% csrf_token %}
-                            <button type="submit" class="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <div class="mb-4">
+                                <label for="file-upload" class="block text-sm font-medium text-gray-700">Upload your assignment:</label>
+                                {{ form.student_attachment }}
+                            </div>
+                            <button type="submit" class="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition">
                                 <i class="fas fa-paper-plane mr-2"></i> Submit Assignment
                             </button>
                         </form>
+                        
                     </div>
                 {% endif %}
                 
