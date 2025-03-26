@@ -15,14 +15,11 @@ def assignment_upload_path(instance, filename):
     import os
     from django.utils.text import slugify
 
-    # Get the first available year or default to "unknown"
     year_of_study = instance.unit.available_for_years.first().year if instance.unit.available_for_years.exists() else "unknown"
 
-    # Get course and unit names
     course_name = slugify(instance.unit.course.name)
     unit_name = slugify(instance.unit.name)
 
-    # Create directory path
     directory = f"assignments/{year_of_study}/{course_name}/{unit_name}/"
 
     # Ensure unique filename
