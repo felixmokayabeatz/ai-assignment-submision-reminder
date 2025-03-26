@@ -12,6 +12,13 @@ now = timezone.now()
 def home(request):
     return render(request, 'home/home.html')
 
+from django.shortcuts import render, get_object_or_404, redirect
+from django.utils import timezone
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+
+from submissions.forms import SubmissionForm  # Import the form
+
 @login_required
 def submit_assignment(request, assignment_id):
     assignment = get_object_or_404(Assignment, id=assignment_id)
@@ -19,24 +26,31 @@ def submit_assignment(request, assignment_id):
     submission, created = StudentSubmission.objects.get_or_create(student=student, assignment=assignment)
 
     if request.method == "POST":
-        now = timezone.now()
-        submission.submitted_at = now
-        submission.is_submitted = True  
+        form = SubmissionForm(request.POST, request.FILES, instance=submission)
+        if form.is_valid():
+            now = timezone.now()
+            submission.submitted_at = now
+            submission.is_submitted = True  
 
-        if now < assignment.deadline:
-            time_difference = (assignment.deadline - now).total_seconds()
-            if time_difference > 86400:
-                submission.status = StudentSubmission.SubmissionStatus.SUBMITTED_EARLY
+            # Handle submission timing
+            if now < assignment.deadline:
+                time_difference = (assignment.deadline - now).total_seconds()
+                if time_difference > 86400:
+                    submission.status = StudentSubmission.SubmissionStatus.SUBMITTED_EARLY
+                else:
+                    submission.status = StudentSubmission.SubmissionStatus.SUBMITTED_ON_TIME
             else:
-                submission.status = StudentSubmission.SubmissionStatus.SUBMITTED_ON_TIME
-        else:
-            submission.status = StudentSubmission.SubmissionStatus.LATE_SUBMISSION
-        
-        submission.save()
-        messages.success(request, "Assignment submitted successfully!")
-        return redirect("assignment_list")
+                submission.status = StudentSubmission.SubmissionStatus.LATE_SUBMISSION
 
-    return render(request, "submit_assignment.html", {"assignment": assignment, "submission": submission})
+            form.save()
+            messages.success(request, "Assignment submitted successfully!")
+            return redirect("assignment_list")
+
+    else:
+        form = SubmissionForm(instance=submission)
+
+    return render(request, "submit_assignment.html", {"assignment": assignment, "submission": submission, "form": form})
+
 
 
 
