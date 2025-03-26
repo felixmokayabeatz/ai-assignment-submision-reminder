@@ -48,7 +48,7 @@ class Assignment(models.Model):
         return self.title
 
 def assignment_upload_path_student(instance, filename):
-    user = instance.student  # Get user from the submission instance
+    user = instance.student
 
     year_of_study = (
         instance.assignment.unit.available_for_years.first().year
