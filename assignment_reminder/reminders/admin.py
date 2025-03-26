@@ -53,14 +53,11 @@ class YearCategoryAdmin(admin.ModelAdmin):
 class UnitAdmin(admin.ModelAdmin):
     list_display = ('name', 'course')
     search_fields = ('name',)
-
-# Customizing the Enrollment admin view
 class EnrollmentAdmin(admin.ModelAdmin):
-    list_display = ('student', 'course', 'enrolled_at')  # Display student, course, and enrollment date
-    search_fields = ('student__username', 'course__name')  # Search by student username and course name
-    list_filter = ('course',)  # Filter by course
+    list_display = ('student', 'course', 'enrolled_at')
+    search_fields = ('student__username', 'course__name')
+    list_filter = ('course',)
 
-# Registering the models with custom admin views
 admin.site.register(Course, CourseAdmin)
 admin.site.register(Unit, UnitAdmin)
 admin.site.register(Enrollment, EnrollmentAdmin)
