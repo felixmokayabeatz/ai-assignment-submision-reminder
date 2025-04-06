@@ -17,7 +17,7 @@ from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
-from submissions.forms import SubmissionForm  # Import the form
+from submissions.forms import SubmissionForm  
 
 @login_required
 def submit_assignment(request, assignment_id):
@@ -32,7 +32,7 @@ def submit_assignment(request, assignment_id):
             submission.submitted_at = now
             submission.is_submitted = True  
 
-            # Handle submission timing
+            
             if now < assignment.deadline:
                 time_difference = (assignment.deadline - now).total_seconds()
                 if time_difference > 86400:
@@ -58,10 +58,10 @@ def submit_assignment(request, assignment_id):
 def assignment_list(request):    
     student = request.user
     
-    # Get all courses the student is enrolled in
+    
     enrollments = Enrollment.objects.filter(student=student)
-    courses = [enrollment.course for enrollment in enrollments]  # List of courses
-    units = Unit.objects.filter(course__in=courses)  # Get all units in the courses
+    courses = [enrollment.course for enrollment in enrollments]  
+    units = Unit.objects.filter(course__in=courses)  
     
 
     assignments = Assignment.objects.all()
@@ -83,7 +83,7 @@ def assignment_list(request):
         "unsubmitted_assignments": unsubmitted_assignments,
         "assignments_deadline": assignments_deadline,
         "courses": courses,
-        "units": units,  # Pass all units in those courses
+        "units": units,  
     })
 
 
@@ -93,24 +93,24 @@ def enroll(request, course_id):
     student_profile = request.user.student_profile
     current_year_category = student_profile.year_category  
 
-    # Get available units for the student's year
+    
     available_units = course.units.filter(available_for_years=current_year_category)
 
     if request.method == "POST":
-        selected_unit_ids = request.POST.getlist("units")  # Get selected units from the form
+        selected_unit_ids = request.POST.getlist("units")  
 
         if not selected_unit_ids:
             messages.error(request, "You must select at least one unit to enroll.")
             return redirect('enroll', course_id=course.id)
 
-        # Try to find an existing enrollment for this student in this course
+        
         enrollment = Enrollment.objects.filter(student=request.user, course=course).first()
 
         if not enrollment:
-            # If no enrollment exists, create a new one
+            
             enrollment = Enrollment.objects.create(student=request.user, course=course)
 
-        # Add selected units to the enrollment (make sure Enrollment has a ManyToManyField to Unit)
+        
         enrollment.units.add(*Unit.objects.filter(id__in=selected_unit_ids))
 
         messages.success(request, f"You have successfully enrolled in {course.name} and selected {len(selected_unit_ids)} units.")
@@ -129,7 +129,7 @@ def  enroll_course(request):
 
 def get_course_for_unit(request, unit_id):
     unit = get_object_or_404(Unit, pk=unit_id)
-    return JsonResponse({'course_id': unit.course.id})  # Return the associated course ID
+    return JsonResponse({'course_id': unit.course.id})  
 
 
 
@@ -152,18 +152,18 @@ def chat_ai(request):
     try:
         data = json.loads(request.body)
         user_message = data.get("message", "").strip()
-        chat_mode = data.get("chat_mode", "controlled").strip()  # Default to 'controlled'
+        chat_mode = data.get("chat_mode", "controlled").strip()  
     
 
         if not user_message:
             return JsonResponse({"response": "Please type a message."})
 
-        # Ensure the user has a student profile
+        
         student_profile = getattr(user, "student_profile", None)
         if not student_profile:
             return JsonResponse({"response": "Student profile not found."})
 
-        # Construct the AI prompt based on chat mode
+        
         if chat_mode == "controlled":
             assignment = getattr(student_profile, "current_assignment", None)
             if assignment:
@@ -183,15 +183,15 @@ def chat_ai(request):
                 There is no active assignment. Reply to this student's message concisely and advice them on the data above: "{user_message}".
                 """
         else:
-            # Free chat mode: no need to consider assignments
+            
             prompt =  f"{user_message}"
         
 
-        # Generate the AI response
+        
         model = GenerativeModel("gemini-1.5-flash-latest")
         response = model.generate_content(prompt)
 
-        # Safely extract AI response
+        
         if response and response.candidates:
             ai_response = response.candidates[0].content.parts[0].text.strip()
             return JsonResponse({"response": ai_response or "AI could not generate a meaningful response."})
