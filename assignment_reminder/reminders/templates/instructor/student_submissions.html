@@ -1,0 +1,50 @@
+{% block content %}
+<h2>Submissions for {{ assignment.title }}</h2>
+
+<table border="1">
+  <thead>
+    <tr>
+      <th>Student</th>
+      <th>Submitted At</th>
+      <th>Status</th>
+      <th>Attachment</th>
+      <th>AI Feedback</th>
+      <th>Marked</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for sub in submissions %}
+    <tr>
+      <td>{{ sub.student.get_full_name }}</td>
+      <td>{{ sub.submitted_at|default:"Not Submitted" }}</td>
+      <td>{{ sub.get_status_display }}</td>
+      <td>
+        {% if sub.student_attachment %}
+        <a href="{{ sub.student_attachment.url }}" target="_blank">View</a>
+        {% else %}
+        -
+        {% endif %}
+      </td>
+      <td>{{ sub.ai_feedback|default:"No feedback yet" }}</td>
+      <td>
+        {% if sub.marked %}
+          ✅
+        {% else %}
+          ❌
+        {% endif %}
+      </td>
+      <td>
+        {% if not sub.marked %}
+        <form method="post">
+          {% csrf_token %}
+          <input type="hidden" name="submission_id" value="{{ sub.id }}">
+          <button type="submit">Mark as Graded</button>
+        </form>
+        {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
