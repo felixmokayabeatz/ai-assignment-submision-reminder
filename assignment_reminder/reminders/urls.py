@@ -3,6 +3,7 @@ from .views import assignment_list, submit_assignment, submit_assignment, home, 
 from django.contrib.auth.views import LogoutView
 from django.conf import settings
 from django.conf.urls.static import static
+from submissions.student_submissions import student_submissions, list_assignments
 
 urlpatterns = [
     path('', home, name='home'),
@@ -22,6 +23,10 @@ urlpatterns = [
     path('get_course_for_unit/<int:unit_id>/', get_course_for_unit, name='get_course_for_unit'),
     
     path("chat-ai/", chat_ai, name="chat-ai"),
+    
+    path('instructor/student_submissions/<int:assignment_id>/', student_submissions, name='student_submissions'),
+    path('instructor/assignments/', list_assignments, name='list_assignments'),
+
 ]
 
 
