@@ -81,6 +81,7 @@ class StudentSubmission(models.Model):
     submitted_at = models.DateTimeField(null=True, blank=True)
     is_submitted = models.BooleanField(default=False)
     student_attachment = models.FileField(upload_to=assignment_upload_path_student, null=True, blank=True)
+    marked = models.BooleanField(default=False)
     
     class SubmissionStatus(models.TextChoices):
         NOT_STARTED = 'NS', 'Not Started'
