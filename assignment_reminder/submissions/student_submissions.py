@@ -3,7 +3,7 @@ from .models import Assignment, StudentSubmission
 from django.contrib.admin.views.decorators import staff_member_required
 
 @staff_member_required  # Only staff/admins can access for now
-def view_submissions(request, assignment_id):
+def student_submissions(request, assignment_id):
     assignment = get_object_or_404(Assignment, id=assignment_id)
     submissions = StudentSubmission.objects.filter(assignment=assignment)
 
@@ -18,3 +18,14 @@ def view_submissions(request, assignment_id):
         'assignment': assignment,
         'submissions': submissions
     })
+    
+    
+    
+    
+from django.shortcuts import render
+from .models import Assignment
+
+def list_assignments(request):
+    assignments = Assignment.objects.all()
+    return render(request, 'instructor/list_assignments.html', {'assignments': assignments})
+
