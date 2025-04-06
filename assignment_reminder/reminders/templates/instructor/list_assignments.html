@@ -1,0 +1,11 @@
+{% block content %}
+<h2>All Assignments</h2>
+<ul>
+    {% for assignment in assignments %}
+    <li>
+        {{ assignment.title }} -
+        <a href="{% url 'student_submissions' assignment.id %}">View Submissions</a>
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}
