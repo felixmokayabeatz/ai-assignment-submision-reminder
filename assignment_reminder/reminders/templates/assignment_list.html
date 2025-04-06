@@ -372,6 +372,14 @@
             let chatWindow = document.getElementById("chat-window");
             chatWindow.style.display = "none";
         });
+        
+        document.addEventListener("click", function(event) {
+            const chatWindow = document.getElementById("chat-window");
+            const chatToggle = document.getElementById("chat-toggle");
+            if (!chatWindow.contains(event.target) && event.target !== chatToggle) {
+                chatWindow.style.display = "none";
+            }
+        });
          
         document.getElementById("chat-send").addEventListener("click", async function () {
             let message = document.getElementById("chat-message").value;
