@@ -12,7 +12,7 @@ def student_submissions(request, assignment_id):
         submission = StudentSubmission.objects.get(id=submission_id)
         submission.marked = True
         submission.save()
-        return redirect('view_submissions', assignment_id=assignment.id)
+        return redirect('student_submissions', assignment_id=assignment.id)
 
     return render(request, 'instructor/student_submissions.html', {
         'assignment': assignment,
